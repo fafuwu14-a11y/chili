@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>赤鲤 · 高考志愿辅助 &amp; 大一成长</title>
+  <meta name="description" content="八个省份的真实投档位次、能问到专业方向的测评、一分一段查询和能照着填的志愿表——填一次分数，看清四年。" />
+  <meta name="theme-color" content="#E60012" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E60012'/%3E%3Cpath d='M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body class="page-portal">
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient-glow ambient-glow--a"></span>
+    <span class="ambient-glow ambient-glow--b"></span>
+    <span class="ambient-glyph">鲤</span>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="赤鲤首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+      </span>
+      <span class="brand-text">
+        <strong>赤鲤</strong>
+        <em>高考志愿辅助 &amp; 大一成长</em>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="主导航">
+      <a class="nav-link is-active" href="./index.html" aria-current="page">首页</a>
+      <a class="nav-link" href="./predict.html">录取预测</a>
+      <a class="nav-link" href="./quiz.html">专业匹配</a>
+      <a class="nav-link" href="./curve.html">一分一段</a>
+      <div class="nav-more">
+        <button class="nav-link nav-more-btn" type="button" aria-expanded="false" aria-haspopup="true">更多<i class="caret" aria-hidden="true">▾</i></button>
+        <div class="nav-more-pop" hidden>
+          <a class="nav-pop-link" href="./plan.html">冲稳保方案</a>
+          <a class="nav-pop-link" href="./mooc.html">专业先导课</a>
+          <a class="nav-pop-link" href="./major.html">专业详情</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="topbar-side">
+      <a class="data-pill" href="./about.html#data"><span class="dot"></span>数据更新至 2026-07</a>
+    </div>
+  </header>
+
+  <main class="shell shell--portal">
+    <section class="hero hero--portal">
+      <p class="eyebrow"><i></i>CHILI · 赤鲤</p>
+      <h1>填一次分数，<br /><em>看清四年</em></h1>
+      <p class="hero-sub">
+        八个省份的真实投档位次、能问到「具体哪个专业」的测评、一分一段查询，
+        最后排成一张能照着填、能打印的志愿表。全程不联网、不上传答卷。
+      </p>
+
+      <form class="portal-quick" id="portal-quick" novalidate>
+        <div class="quick-field">
+          <label for="q-province">省份</label>
+          <select id="q-province" name="province"></select>
+        </div>
+        <div class="quick-field">
+          <label for="q-track">科类</label>
+          <select id="q-track" name="track"></select>
+        </div>
+        <div class="quick-field quick-field--score">
+          <label for="q-score">高考分数</label>
+          <input id="q-score" name="score" type="number" inputmode="numeric" min="0" max="750" placeholder="例如 600" />
+        </div>
+        <button class="btn-primary quick-submit" type="submit"><span>看能上哪儿</span></button>
+        <p class="quick-hint" id="quick-hint">填分数，或直接点下面的卡片从任意一步开始。</p>
+      </form>
+    </section>
+
+    <section class="features" aria-labelledby="features-title">
+      <div class="section-head">
+        <h2 id="features-title">四件事，一条线走完</h2>
+        <p>不用按顺序，从你最没底的那一步进去就行。</p>
+      </div>
+
+      <div class="feature-grid">
+        <a class="feature-card" href="./quiz.html">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 3l2.4 5.3 5.6.6-4.2 3.9 1.2 5.7L12 15.8 6.9 18.5l1.2-5.7L4 8.9l5.6-.6z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </span>
+          <h3>专业匹配</h3>
+          <p>18 / 34 / 48 题，五级量表。测完给的是<strong>具体专业方向</strong>，不是笼统的「理工类」。</p>
+          <span class="feature-go">开始测评 →</span>
+        </a>
+
+        <a class="feature-card" href="./predict.html">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 19V5m0 14h16M8 15l4-5 3 3 4-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <h3>录取预测</h3>
+          <p>八个省份的真实投档位次，按位次等值法算出每个专业组的录取概率，自动分冲稳保。</p>
+          <span class="feature-go">填分数 →</span>
+        </a>
+
+        <a class="feature-card" href="./curve.html">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M5 20V10m5 10V5m5 15v-7m5 7V8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <h3>一分一段</h3>
+          <p>你的分数在全省排第几，三年并排看。分数会骗人，位次不会。</p>
+          <span class="feature-go">查位次 →</span>
+        </a>
+
+        <a class="feature-card" href="./plan.html">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="20" height="20"><path d="M7 4h10a2 2 0 012 2v14l-7-3-7 3V6a2 2 0 012-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </span>
+          <h3>志愿方案</h3>
+          <p>按你所在省份的志愿上限自动排冲稳保，四十条、八十条、一百一十二条都能排满，能打印。</p>
+          <span class="feature-go">生成方案 →</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="spotlight" aria-labelledby="spotlight-title">
+      <div class="spotlight-copy">
+        <p class="eyebrow"><i></i>这次改的重点</p>
+        <h2 id="spotlight-title">测完不只告诉你「适合工科」，<br />而是「适合哪一个工科」</h2>
+        <p>原来的测评停在 21 个大类。现在往下切一层：大类 → 具体专业，再给三条你真正关心的东西。</p>
+        <a class="btn-primary" href="./quiz.html"><span>从测评开始</span></a>
+      </div>
+      <ul class="spotlight-list">
+        <li>
+          <b>具体专业</b>
+          <span>计算机类 97% 之后，告诉你是计算机科学与技术、软件工程，还是信息安全，以及它们的区别。</span>
+        </li>
+        <li>
+          <b>四条出路</b>
+          <span>就业、考公、考研、创业，各自适配到什么程度，数字后面标来源和年份。</span>
+        </li>
+        <li>
+          <b>四年后预警</b>
+          <span>这个专业在八个省的招生规模是扩还在缩、热度在升还在降，给你看原始数字。</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="trust" aria-label="数据与可信度">
+      <div class="trust-item">
+        <b>8 个地区</b>
+        <span>江苏 · 广东 · 湖北 · 山西 · 辽宁 · 浙江 · 山东 · 河北</span>
+      </div>
+      <div class="trust-item">
+        <b>真实投档口径</b>
+        <span>各省考试院公开的投档线与一分一段表，第三方数据不用</span>
+      </div>
+      <div class="trust-item">
+        <b>回测过</b>
+        <span>用 2025 年数据预测 2026 年，1,813 个专业组，中位误差 8.0 分</span>
+      </div>
+      <a class="trust-link" href="./about.html">这些数字怎么来的 →</a>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="赤鲤首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+          </span>
+          <span class="brand-text">
+            <strong>赤鲤</strong>
+            <em>高考志愿辅助 &amp; 大一成长</em>
+          </span>
+        </a>
+        <p class="footer-lead">把分数、位次和兴趣，变成一张能照着填的志愿表。</p>
+        <p class="footer-meta">数据更新至 2026 年 7 月<br />江苏 · 广东 · 湖北 · 山西 · 辽宁 · 浙江 · 山东 · 河北</p>
+      </div>
+      <nav class="footer-col" aria-label="产品">
+        <h2>产品</h2>
+        <a href="./predict.html">录取概率预测</a>
+        <a href="./quiz.html">专业匹配测评</a>
+        <a href="./curve.html">一分一段查询</a>
+        <a href="./plan.html">冲稳保方案</a>
+        <a href="./mooc.html">专业先导课</a>
+      </nav>
+      <nav class="footer-col" aria-label="数据">
+        <h2>数据</h2>
+        <a href="./about.html#data">数据来源</a>
+        <a href="./about.html#method">计算方法</a>
+        <a href="./about.html#accuracy">回测与误差</a>
+        <a href="./help.html">帮助中心</a>
+      </nav>
+      <nav class="footer-col" aria-label="关于">
+        <h2>关于</h2>
+        <a href="./about.html">关于赤鲤</a>
+        <a href="./privacy.html">隐私政策</a>
+        <a href="./terms.html">用户协议</a>
+        <a href="./help.html#contact">联系我们</a>
+      </nav>
+    </div>
+    <div class="footer-base">
+      <p>© 2026 赤鲤 · 结果由统计模型估算，仅供参考，不构成录取承诺。</p>
+      <p><a href="./about.html#filing">备案信息</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript><p style="padding:24px;text-align:center">这个页面需要启用 JavaScript。</p></noscript>
+  <script type="module" src="./js/portal.js"></script>
+</body>
+</html>

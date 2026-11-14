@@ -1,0 +1,23 @@
+__pycache__/
+*.pyc
+shots/
+server.out.log
+server.err.log
+
+# 账号库是本机数据，不进版本库
+backend/data/app.db
+backend/data/*.db
+backend/data/*.db-journal
+backend/data/*.db-wal
+backend/data/*.db-shm
+
+# 构建产物（PyInstaller）
+build/
+dist/
+*.spec.bak
+
+# 临时
+*.log
+*.tmp
+Thumbs.db
+.DS_Store

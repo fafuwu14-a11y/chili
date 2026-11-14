@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>登录 · 赤鲤</title>
+  <meta name="description" content="登录赤鲤：位次预测、冲稳保方案、专业匹配、先导课推荐。" />
+  <meta name="theme-color" content="#E60012" />
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E60012'/%3E%3Cpath d='M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body class="auth-page">
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient-glow ambient-glow--a"></span>
+    <span class="ambient-glow ambient-glow--b"></span>
+    <span class="ambient-glyph">鲤</span>
+  </div>
+
+  <main class="auth-shell">
+    <section class="auth-brand">
+      <a class="brand" href="/" aria-label="赤鲤首页">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+        </span>
+        <span class="brand-text">
+          <strong>赤鲤</strong>
+          <em>高考志愿辅助 &amp; 大一成长</em>
+        </span>
+      </a>
+
+      <h1 class="auth-title">把分数，换成<br /><em>看得见的把握</em></h1>
+      <p class="auth-sub">位次预测、冲稳保方案、专业匹配、先导课——四件事一次做完。</p>
+
+      <ul class="auth-points">
+        <li><b>位次等值</b>拿真实录取位次推算，不靠猜分数</li>
+        <li><b>冲稳保</b>一键生成能打印的志愿表</li>
+        <li><b>真实数据</b>江苏 · 广东 · 湖北 · 山西 · 辽宁 · 浙江 · 山东 · 河北</li>
+      </ul>
+
+      <p class="auth-stamp"><a href="./about.html#data">数据来源：省级招生考试机构公开投档线 →</a></p>
+    </section>
+
+    <section class="auth-card">
+      <div class="auth-tabs" role="tablist" aria-label="登录或注册">
+        <button type="button" class="auth-tab is-active" id="tab-login" role="tab" aria-selected="true" aria-controls="auth-form" data-mode="login">登录</button>
+        <button type="button" class="auth-tab" id="tab-register" role="tab" aria-selected="false" aria-controls="auth-form" data-mode="register">注册</button>
+      </div>
+
+      <header class="auth-head">
+        <h2 id="auth-title">欢迎回来</h2>
+        <p id="auth-sub">用注册时的邮箱和密码登录。</p>
+      </header>
+
+      <form id="auth-form" novalidate autocomplete="on">
+        <div class="field" id="email-field">
+          <label for="email">邮箱</label>
+          <input
+            id="email" name="email" type="email" inputmode="email"
+            autocomplete="username" spellcheck="false" autocapitalize="off"
+            placeholder="name@example.com" maxlength="120" required
+            aria-describedby="email-error" />
+          <p class="field-error" id="email-error" hidden></p>
+        </div>
+
+        <div class="field" id="password-field">
+          <label for="password">密码</label>
+          <div class="pw-wrap">
+            <input
+              id="password" name="password" type="password"
+              autocomplete="current-password" placeholder="输入密码"
+              maxlength="128" required aria-describedby="password-error" />
+            <button type="button" class="pw-toggle" id="pw-toggle" aria-label="显示密码" aria-pressed="false">
+              <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+            </button>
+          </div>
+          <p class="field-error" id="password-error" hidden></p>
+          <p class="caps-hint" id="caps-hint" hidden>大写锁定开着</p>
+          <ul class="strength" id="strength" hidden aria-label="密码要求">
+            <li data-rule="len">至少 8 位</li>
+            <li data-rule="letter">包含字母</li>
+            <li data-rule="digit">包含数字</li>
+          </ul>
+        </div>
+
+        <div class="field" id="confirm-field" hidden>
+          <label for="confirm">确认密码</label>
+          <input
+            id="confirm" name="confirm" type="password"
+            autocomplete="new-password" placeholder="再输一次" maxlength="128"
+            aria-describedby="confirm-error" />
+          <p class="field-error" id="confirm-error" hidden></p>
+        </div>
+
+        <p class="form-error" id="form-error" role="alert" hidden></p>
+
+        <button type="submit" class="btn-primary auth-submit" id="auth-submit">
+          <span id="submit-text">登录</span>
+          <svg class="auth-submit-arrow" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="auth-spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+
+      <p class="auth-note">
+        继续即表示你已阅读并同意
+        <a href="./terms.html" target="_blank" rel="noopener">《用户协议》</a>与
+        <a href="./privacy.html" target="_blank" rel="noopener">《隐私政策》</a>。
+      </p>
+
+      <p class="auth-help-line">
+        <a href="./help.html#reset">忘记密码？</a>
+        <span aria-hidden="true">·</span>
+        <a href="./help.html">需要帮助</a>
+      </p>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="./js/login.js"></script>
+</body>
+</html>

@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>关于与数据来源 · 赤鲤</title>
+  <meta name="description" content="赤鲤的数据来源、计算方法、回测精度与已知局限。" />
+  <meta name="theme-color" content="#E60012" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E60012'/%3E%3Cpath d='M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient-glow ambient-glow--a"></span>
+    <span class="ambient-glow ambient-glow--b"></span>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="赤鲤首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+      </span>
+      <span class="brand-text">
+        <strong>赤鲤</strong>
+        <em>高考志愿辅助 &amp; 大一成长</em>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="主导航">
+      <a class="nav-link" href="./index.html">首页</a>
+      <a class="nav-link" href="./predict.html">录取预测</a>
+      <a class="nav-link" href="./quiz.html">专业匹配</a>
+      <a class="nav-link" href="./curve.html">一分一段</a>
+      <div class="nav-more">
+        <button class="nav-link nav-more-btn" type="button" aria-expanded="false" aria-haspopup="true">更多<i class="caret" aria-hidden="true">▾</i></button>
+        <div class="nav-more-pop" hidden>
+          <a class="nav-pop-link" href="./plan.html">冲稳保方案</a>
+          <a class="nav-pop-link" href="./mooc.html">专业先导课</a>
+          <a class="nav-pop-link" href="./major.html">专业详情</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="topbar-side">
+      <a class="data-pill" href="./about.html#data"><span class="dot"></span>数据更新至 2026-07</a>
+    </div>
+  </header>
+
+  <main class="doc-shell">
+    <p class="doc-eyebrow">About &amp; Data</p>
+    <h1 class="doc-title">这个分数，够得上哪儿<br />我们把账算给你看</h1>
+    <p class="doc-lead">
+      赤鲤是一个志愿填报的辅助工具：用公开的投档线与一分一段表，估算每个招生单位的录取概率，
+      再按冲、稳、保排成一张能照着填的表。它不替你决定，只负责把不确定的地方标出来。
+    </p>
+    <p class="doc-updated">数据更新至 2026 年 7 月 · 最近核对 2026 年 10 月 20 日</p>
+
+    <nav class="doc-toc" aria-label="本页目录">
+      <h2>本页内容</h2>
+      <ol>
+        <li><a href="#what">赤鲤能做什么</a></li>
+        <li><a href="#data">数据来源</a></li>
+        <li><a href="#method">计算方法</a></li>
+        <li><a href="#accuracy">精度与回测</a></li>
+        <li><a href="#limits">已知的局限</a></li>
+        <li><a href="#filing">备案与主体信息</a></li>
+      </ol>
+    </nav>
+
+    <section class="doc-section" id="what">
+      <h2>赤鲤能做什么</h2>
+      <ul>
+        <li><strong>录取概率预测</strong>：输入分数或位次，给出每个招生单位的录取概率，并划成冲、稳、保三档。</li>
+        <li><strong>专业匹配测评</strong>：18 / 34 / 48 题三套问卷，用五级量表把兴趣、学科能力、工作偏好折算成匹配度。</li>
+        <li><strong>冲稳保方案</strong>：从全部招生单位里挑出值得填的若干个，排好顺序，支持打印和导出 PDF。</li>
+        <li><strong>专业先导课</strong>：按专业推荐入门课程，开学前先看看这个专业到底在学什么。</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="data">
+      <h2>数据来源</h2>
+      <p>
+        录取数据全部来自<strong>各省教育考试院</strong>公开发布的官方文件（江苏、广东、湖北、山西、辽宁、浙江、山东、河北），未使用任何第三方商业数据库，也没有抓取需要登录或声明禁止采集的站点。每家都是同一套东西：普通类本科批投档线 + 逐分段统计表。
+      </p>
+      <table class="doc-table">
+        <thead>
+          <tr><th>文件</th><th>内容</th><th>用途</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>2026 年普通类本科批投档线</td><td>各招生单位的投档最低分与同分排序项</td><td>当年的录取位次基准</td></tr>
+          <tr><td>2025 年普通类本科批投档线</td><td>同上</td><td>两年对照、稳定性评估</td></tr>
+          <tr><td>2026 年逐分段统计表</td><td>一分一段（分数 → 累计人数）</td><td>分数与位次互换</td></tr>
+          <tr><td>2025 年逐分段统计表</td><td>同上</td><td>同上</td></tr>
+        </tbody>
+      </table>
+      <ul class="doc-facts">
+        <li><b>8</b><span>个地区</span></li>
+        <li><b>94,790</b><span>个招生单位</span></li>
+        <li><b>最长 3 年</b><span>录取数据</span></li>
+      </ul>
+      <p class="doc-note">
+        投档线原始文件不含招生计划数，所以页面上的「计划」一栏显示为「—」，不影响概率计算。
+        一分一段表为官方图片版，我们做了文字化处理并逐行校验（2026 年 456 分对应累计 217,438 人，与官方一致）。
+      </p>
+    </section>
+
+    <section class="doc-section" id="method">
+      <h2>计算方法</h2>
+      <h3>1. 位次等值法</h3>
+      <p>
+        同一所学校在不同年份的录取分数不可直接比较——题目难易、考生人数、招生计划每年都在变。
+        真正稳定的是<strong>位次</strong>：它表示“全省第多少名”，天然消掉了试卷难度的影响。
+        所以我们以招生单位最近一年的<strong>真实最低录取位次</strong>为基准，与你的位次比较。
+      </p>
+      <h3>2. 概率换算</h3>
+      <p>
+        设该招生单位预测位次为 <code>R</code>，你的位次为 <code>r</code>，波动尺度 σ 与概率 P 按下式计算：
+      </p>
+      <p class="doc-formula">σ = max(R × 7.5%, 1,200)<br />P = 1 / (1 + e<sup>(r − R) / σ</sup>)</p>
+      <p>
+        位次越接近，概率越接近 50%；差得越远，曲线越快向 0 或 100% 收敛。
+        下限 1,200 名是为了避免位次极小的顶尖招生单位给出过于自信的概率。
+      </p>
+      <h3>3. 分档</h3>
+      <p>
+        概率 ≥ 85% 记为<strong>保</strong>，45%–85% 记为<strong>稳</strong>，低于 45% 记为<strong>冲</strong>。
+        分档只影响排序与建议文案，不改变概率本身。
+      </p>
+      <h3>4. 为什么不用“三年趋势外推”</h3>
+      <p>
+        我们试过用近三年位次拟合斜率再外推，但在一年迁移数据上做回归，噪声比信号大：
+        院校的大年小年反转会让模型系统性押错方向。现在的做法是只用最近一年、不做趋势假设，
+        宁可保守，也不把学校高估成“更容易考上”。
+      </p>
+    </section>
+
+    <section class="doc-section" id="accuracy">
+      <h2>精度与回测</h2>
+      <p>
+        我们做了严格意义上的回测：<strong>只用 2025 年的数据预测 2026 年</strong>，再和 2026 年真实投档线对答案，
+        共有 1,813 个两年选科要求一致的专业组参与。
+      </p>
+      <table class="doc-table">
+        <thead>
+          <tr><th>指标</th><th>结果</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>分数误差（中位数）</td><td>8.0 分</td></tr>
+          <tr><td>误差 ≤ 5 分的比例</td><td>29.9%</td></tr>
+          <tr><td>误差 ≤ 10 分的比例</td><td>60.2%</td></tr>
+          <tr><td>位次误差（中位数）</td><td>约 9,459 名</td></tr>
+        </tbody>
+      </table>
+      <h3>分档命中率（回测实测）</h3>
+      <table class="doc-table">
+        <thead>
+          <tr><th>档位</th><th>模型给的平均概率</th><th>实际录取比例</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>保（≥85%）</td><td>93.4%</td><td>95.0%</td></tr>
+          <tr><td>稳（45%–85%）</td><td>66.6%</td><td>75.8%</td></tr>
+          <tr><td>冲（&lt;45%）</td><td>16.6%</td><td>21.4%</td></tr>
+        </tbody>
+      </table>
+      <p class="doc-note">
+        模型整体偏保守 5–11 个百分点：说 66% 的，实际录取的有 76%。这是有意为之——志愿填报里，
+        低估自己的保底选项比高估危险得多。
+      </p>
+    </section>
+
+    <section class="doc-section" id="limits">
+      <h2>已知的局限</h2>
+      <ul>
+        <li><strong>目前覆盖 8 个地区：江苏、广东（2024–2026）、山西（2025–2026）、湖北（仅 2026）是院校专业组模式；辽宁、浙江、山东、河北是「专业+学校」模式，投档单位直接就是具体专业。</strong>只收录投档分数齐全的省份：当年投档线与一分一段表齐全、科类齐全。年份不够的省只能看单年数据，没法做跨年对照，页面上会如实写明，不硬凑结论。</li>
+        <li><strong>专业组内部不分专业。</strong>投档线只到“专业组”这一级，组内具体专业的分流要看学校自己的规则。</li>
+        <li><strong>不含招生计划变化。</strong>某校今年扩招 200 人，位次会整体后移；投档线文件本身不含计划数，这个信息目前只能靠你自己留意。</li>
+        <li><strong>概率不是承诺。</strong>它描述的是历史规律下的可能性，不是“你一定会被录取”。</li>
+      </ul>
+    </section>
+
+    <section class="doc-section" id="filing">
+      <h2>备案与主体信息</h2>
+      <p>
+        本站为独立开发的志愿辅助工具，正在办理 ICP 备案，备案完成后会在页脚公示备案号与运营主体。
+        在此之前，如果你对数据来源或计算方式有疑问，可以通过
+        <a href="./help.html#contact">帮助中心</a>里的方式联系我们。
+      </p>
+      <p>
+        相关文档：<a href="./privacy.html">隐私政策</a> · <a href="./terms.html">用户协议</a> ·
+        <a href="./help.html">帮助中心</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="赤鲤首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+          </span>
+          <span class="brand-text">
+            <strong>赤鲤</strong>
+            <em>高考志愿辅助 &amp; 大一成长</em>
+          </span>
+        </a>
+        <p class="footer-lead">把分数、位次和兴趣，变成一张能照着填的志愿表。</p>
+        <p class="footer-meta">数据更新至 2026 年 7 月<br />江苏 · 广东 · 湖北 · 山西 · 辽宁 · 浙江 · 山东 · 河北</p>
+      </div>
+      <nav class="footer-col" aria-label="产品">
+        <h2>产品</h2>
+        <a href="./index.html">录取概率预测</a>
+        <a href="./quiz.html">专业匹配测评</a>
+        <a href="./plan.html">冲稳保方案</a>
+        <a href="./mooc.html">专业先导课</a>
+      </nav>
+      <nav class="footer-col" aria-label="数据">
+        <h2>数据</h2>
+        <a href="./about.html#data">数据来源</a>
+        <a href="./about.html#method">计算方法</a>
+        <a href="./about.html#accuracy">回测与误差</a>
+        <a href="./help.html">帮助中心</a>
+      </nav>
+      <nav class="footer-col" aria-label="关于">
+        <h2>关于</h2>
+        <a href="./about.html">关于赤鲤</a>
+        <a href="./privacy.html">隐私政策</a>
+        <a href="./terms.html">用户协议</a>
+        <a href="./help.html#contact">联系我们</a>
+      </nav>
+    </div>
+    <div class="footer-base">
+      <p>© 2026 赤鲤 · 结果由统计模型估算，仅供参考，不构成录取承诺。</p>
+      <p><a href="./about.html#filing">备案信息</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="./js/doc.js"></script>
+</body>
+</html>
