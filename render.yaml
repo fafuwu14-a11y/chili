@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: chili
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: "echo 'zero third-party dependencies'"
+    startCommand: "python run.py --host 0.0.0.0 --port $PORT --no-open"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
