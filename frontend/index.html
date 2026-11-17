@@ -96,17 +96,34 @@
           <p class="hp-hero-note">不登录也能测；答案默认保存在你自己的浏览器里。</p>
         </div>
 
-        <aside class="hp-glass" aria-label="选科模式速览">
+        <aside class="hp-glass hp-modepanel" aria-label="选科模式速览" data-mode-panel>
           <header class="hp-glass-head">
             <span class="hp-glass-dot" aria-hidden="true"></span>
             你的省份，用哪套规则？
           </header>
-          <ul class="hp-glass-list">
-            <li><b>3+1+2</b><span>23 省 · 12 种组合</span></li>
-            <li><b>3+3</b><span>6 省市 · 20 种组合</span></li>
-            <li><b>浙江 7 选 3</b><span>35 种组合</span></li>
-            <li><b>老高考</b><span>西藏、新疆过渡期</span></li>
-          </ul>
+
+          <div class="hp-mtabs" role="tablist" aria-label="选科模式">
+            <button class="hp-mtab is-active" type="button" role="tab" aria-selected="true" data-mtab="312">3+1+2<i>12</i></button>
+            <button class="hp-mtab" type="button" role="tab" aria-selected="false" data-mtab="33">3+3<i>20</i></button>
+            <button class="hp-mtab" type="button" role="tab" aria-selected="false" data-mtab="zj">浙江<i>35</i></button>
+            <button class="hp-mtab" type="button" role="tab" aria-selected="false" data-mtab="old">老高考<i>2</i></button>
+          </div>
+
+          <p class="hp-mnum">
+            <b data-mcount>12</b><span>种组合</span><em data-mprovinces>23 省</em>
+          </p>
+          <div class="hp-mbar" aria-hidden="true"><span data-mbar style="width:34%"></span></div>
+          <p class="hp-mdesc" data-mdesc>首选物理或历史，再从化学、生物、政治、地理里选 2 门。同一个组合，能报的专业差别很大。</p>
+
+          <ul class="hp-mgrid" data-mgrid aria-label="全部组合"></ul>
+
+          <div class="hp-mfind">
+            <input id="hp-mprovince" type="text" list="hp-mprovs" placeholder="输入你的省份，比如 江苏" autocomplete="off">
+            <datalist id="hp-mprovs"></datalist>
+            <button type="button" id="hp-mgo">查规则</button>
+          </div>
+          <p class="hp-mresult" id="hp-mresult" hidden></p>
+
           <p class="hp-glass-foot">
             先确认规则，再谈组合。
             <a href="#hp-cover">看省份清单 →</a>

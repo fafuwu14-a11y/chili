@@ -1617,3 +1617,204 @@ body.lm-scroll-lock {
   .hp-btn--ghost:hover,
   .lm-submit:hover:not(:disabled) { transform: none; }
 }
+
+/* ---------- 首页：选科模式互动面板 ---------- */
+.hp-modepanel { display: flex; flex-direction: column; gap: 13px; }
+
+.hp-mtabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(140, 100, 100, 0.09);
+}
+.hp-mtab {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px 2px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--ink-2, #6b5c5d);
+  white-space: nowrap;
+  transition: background .18s, color .18s, box-shadow .18s;
+}
+.hp-mtab:hover { color: #d92b3a; }
+.hp-mtab.is-active {
+  background: #fff;
+  color: #d92b3a;
+  box-shadow: 0 2px 9px rgba(160, 60, 60, 0.16);
+}
+
+.hp-mnum {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 0;
+}
+.hp-mnum b {
+  font-family: "Iowan Old Style", "Songti SC", Georgia, serif;
+  font-size: 34px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: #2b2223;
+  font-variant-numeric: tabular-nums;
+}
+.hp-mnum span { font-size: 13px; color: var(--ink-3, #8a7c7d); }
+.hp-mnum em {
+  margin-left: auto;
+  font-style: normal;
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(217, 43, 58, 0.09);
+  color: #b52632;
+  white-space: nowrap;
+}
+
+.hp-mdesc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.68;
+  color: var(--ink-2, #6b5c5d);
+}
+
+.hp-mgrid {
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+  gap: 5px;
+}
+.hp-mgrid li {
+  padding: 8px 2px;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: #4a3c3d;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(150, 110, 110, 0.17);
+  opacity: 0;
+  transform: translateY(6px) scale(.94);
+  transition: transform .16s ease, background .16s ease, color .16s ease, border-color .16s ease;
+}
+.hp-mgrid.is-refresh li {
+  animation: hp-combo-in .34s cubic-bezier(.2, .7, .3, 1) forwards;
+  animation-delay: calc(var(--i, 0) * 17ms);
+}
+.hp-mgrid li:hover {
+  transform: translateY(-2px) scale(1.07);
+  background: #d92b3a;
+  border-color: #d92b3a;
+  color: #fff;
+}
+@keyframes hp-combo-in {
+  to { opacity: 1; transform: none; }
+}
+
+.hp-mfind { display: flex; gap: 8px; }
+.hp-mfind input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(150, 110, 110, 0.24);
+  background: rgba(255, 255, 255, 0.86);
+  font-family: inherit;
+  font-size: 13px;
+  color: inherit;
+}
+.hp-mfind input:focus {
+  outline: 2px solid rgba(217, 43, 58, 0.22);
+  border-color: #d92b3a;
+}
+.hp-mfind button {
+  padding: 9px 15px;
+  border-radius: 10px;
+  border: 0;
+  cursor: pointer;
+  background: #d92b3a;
+  color: #fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  transition: background .16s;
+}
+.hp-mfind button:hover { background: #bd2331; }
+
+.hp-mresult {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(217, 43, 58, 0.07);
+  font-size: 13px;
+  line-height: 1.65;
+  color: #5a3a3c;
+}
+.hp-mresult b { color: #b52632; }
+.hp-mresult a { color: #b52632; font-weight: 600; text-decoration: none; }
+.hp-mresult a:hover { text-decoration: underline; }
+
+@media (max-width: 520px) {
+  .hp-mtabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hp-mnum b { font-size: 29px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hp-mgrid.is-refresh li { animation: none; opacity: 1; transform: none; }
+}
+
+.hp-mtab i {
+  display: block;
+  margin-top: 2px;
+  font-style: normal;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0;
+  opacity: .55;
+}
+.hp-mtab.is-active i { opacity: .8; }
+
+.hp-mbar {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(150, 110, 110, 0.14);
+  overflow: hidden;
+}
+.hp-mbar span {
+  display: block;
+  height: 100%;
+  width: 34%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #e0654f, #d92b3a);
+  transition: width .45s cubic-bezier(.2, .7, .3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hp-mbar span { transition: none; }
+}
+
+/* 组合格子按首选科目阵营着色：物理派偏蓝、历史派偏橙、其余中性 */
+.hp-mgrid li.hp-combo[data-tone="phys"] {
+  background: rgba(196, 220, 255, 0.55);
+  border-color: rgba(80, 130, 200, 0.28);
+  color: #24446b;
+}
+.hp-mgrid li.hp-combo[data-tone="hist"] {
+  background: rgba(255, 226, 196, 0.6);
+  border-color: rgba(200, 130, 60, 0.3);
+  color: #6b4420;
+}
+.hp-mgrid li.hp-combo[data-tone="mix"] {
+  background: rgba(226, 226, 232, 0.6);
+  border-color: rgba(120, 120, 140, 0.22);
+  color: #43434f;
+}
+.hp-mgrid li.hp-combo[data-tone]:hover {
+  background: #d92b3a;
+  border-color: #d92b3a;
+  color: #fff;
+}
