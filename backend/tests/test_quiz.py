@@ -58,10 +58,10 @@ class QuizSpecTest(unittest.TestCase):
 
     def test_spec_counts(self):
         counts = {spec["key"]: spec["count"] for spec in matcher.spec_list()}
-        self.assertEqual(counts, {"quick": 18, "standard": 40, "deep": 54})
+        self.assertEqual(counts, {"quick": 18, "deep": 78})
         self.assertEqual(len(QUESTIONS["quick"]), 18)
         self.assertEqual(len(QUESTIONS["standard"]), 40)
-        self.assertEqual(len(QUESTIONS["deep"]), 54)
+        self.assertEqual(len(QUESTIONS["deep"]), 78)
 
     def test_spec_list_shape(self):
         for spec in matcher.spec_list():
@@ -85,7 +85,7 @@ class QuizSpecTest(unittest.TestCase):
         deep = [q["id"] for q in QUESTIONS["deep"]]
         self.assertEqual(standard[: len(quick)], quick)
         self.assertEqual(deep[: len(standard)], standard)
-        self.assertEqual(len(deep), 54)
+        self.assertEqual(len(deep), 78)
 
     def test_question_ids_are_unique(self):
         deep = [q["id"] for q in QUESTIONS["deep"]]

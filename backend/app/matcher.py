@@ -59,6 +59,7 @@ def spec_list() -> list[dict]:
             "covers": list(spec["covers"]),
         }
         for spec in SPECS
+        if not spec.get("hidden")
     ]
 
 

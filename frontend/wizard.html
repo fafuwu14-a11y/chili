@@ -78,6 +78,25 @@
         <p class="wz-pick-combos" id="wz-province-combos"></p>
       </div>
 
+      <div class="wz-edition" id="wz-edition">
+        <p class="wz-edition-head">
+          <span class="wz-edition-title">先选测试版本</span>
+          <span class="wz-edition-clock" id="wz-start-clock">23 题 · 约 6 分钟</span>
+        </p>
+        <div class="wz-edition-seg" id="wz-edition-seg" role="group" aria-label="测试版本">
+          <button class="wz-edition-btn is-active" type="button" data-edition="simple" aria-pressed="true">
+            <b>简易测试</b>
+            <span>23 题 · 约 6 分钟</span>
+            <em>情景四选一，快速分出大方向</em>
+          </button>
+          <button class="wz-edition-btn" type="button" data-edition="deep" aria-pressed="false">
+            <b>深度测试</b>
+            <span>56 题 · 约 14 分钟</span>
+            <em>加学科细分、专业深入、现实约束，能落到具体分支</em>
+          </button>
+        </div>
+      </div>
+
       <div class="wz-actions">
         <button class="hp-btn hp-btn--primary wz-btn-lg" type="button" id="wz-start" disabled>开始测评</button>
         <p class="wz-action-note" id="wz-start-note">先选一个省份</p>
@@ -93,7 +112,7 @@
             <h1 id="wz-step-2-title">23 道题，凭第一反应答</h1>
             <p class="wz-lead">没有标准答案。越接近平时的你，推荐越准；往「应该怎样」上答，结果只会像一份标准简历。</p>
           </div>
-          <p class="wz-quiz-clock">约 6 分钟</p>
+          <p class="wz-quiz-clock" id="wz-quiz-clock">约 6 分钟</p>
         </div>
       </header>
 

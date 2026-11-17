@@ -249,7 +249,7 @@ class ApiHandler(BaseHTTPRequestHandler):
                 answers = body.get("answers") or {}
                 result = matcher.match(
                     dataset,
-                    spec_key=str(body.get("spec") or "standard"),
+                    spec_key=str(body.get("spec") or "deep"),
                     answers=answers,
                     limit=_limit(body.get("limit"), 6),
                 )
@@ -418,7 +418,10 @@ class ApiHandler(BaseHTTPRequestHandler):
                     self._send_json(HTTPStatus.METHOD_NOT_ALLOWED, {"ok": False, "error": "请使用 GET"})
                     return
                 data = subjects.meta()
-                data["quiz"] = choice_quiz.meta()
+                edition = (_first(query, "edition") or "simple").strip()
+                if edition not in ("simple", "deep"):
+                    edition = "simple"
+                data["quiz"] = choice_quiz.meta(edition)
                 data["majors_total"] = len(_majors())
                 self._send_json(HTTPStatus.OK, {"ok": True, "data": data})
                 return
@@ -427,10 +430,14 @@ class ApiHandler(BaseHTTPRequestHandler):
                 if method != "GET":
                     self._send_json(HTTPStatus.METHOD_NOT_ALLOWED, {"ok": False, "error": "请使用 GET"})
                     return
+                edition = (_first(query, "edition") or "simple").strip()
+                if edition not in ("simple", "deep"):
+                    edition = "simple"
                 self._send_json(
                     HTTPStatus.OK,
                     {"ok": True, "data": {
-                        "items": choice_quiz.public_questions(),
+                        "edition": edition,
+                        "items": choice_quiz.public_questions(edition),
                         "scale": choice_quiz.SCALE,
                     }},
                 )
@@ -460,12 +467,16 @@ class ApiHandler(BaseHTTPRequestHandler):
                 answers = body.get("answers")
                 if not isinstance(answers, dict):
                     raise ValueError("答案必须是对象")
+                edition = str(body.get("edition") or "simple").strip()
+                if edition not in ("simple", "deep"):
+                    edition = "simple"
                 result = choice_engine.build_report(
                     answers,
                     str(body.get("province") or "").strip(),
                     _majors(),
                     top_combos=_clamp(body.get("top_combos"), 3, 1, 6),
                     top_majors=_clamp(body.get("top_majors"), 12, 1, 40),
+                    edition=edition,
                 )
                 if not result.get("ok"):
                     self._send_json(

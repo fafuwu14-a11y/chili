@@ -42,6 +42,7 @@ const RETEST_QUESTIONS = [
 const nf1 = new Intl.NumberFormat("zh-CN", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
 const state = {
+  edition: "simple",
   step: 1,
   province: "",
   meta: null,
@@ -214,11 +215,11 @@ function missingQuestions() {
 }
 
 function quizCount() {
-  return Number(state.meta?.quiz?.count) || state.quiz.length || 23;
+  return state.quiz.length || Number(state.meta?.quiz?.count) || 23;
 }
 
 function quizMinutes() {
-  return Number(state.meta?.quiz?.minutes) || 6;
+  return state.edition === "deep" ? 14 : 6;
 }
 
 function scaleLabel(index) {
@@ -230,10 +231,21 @@ function activeOptionInput() {
 }
 
 /* ---------- 初始化 ------------------------------------------------------ */
+async function bindEdition() {
+  const seg = byId("wz-edition-seg");
+  if (!seg) return;
+  seg.addEventListener("click", (event) => {
+    const btn = event.target.closest("[data-edition]");
+    if (!btn || state.done) return;
+    applyEdition(btn.dataset.edition);
+  });
+}
+
 async function init() {
   cacheUI();
   loadStoredState();
   bindEvents();
+  bindEdition();
   mountLogin();
   syncAuth();
 
@@ -610,7 +622,7 @@ async function ensureQuiz() {
 
   state.quizPromise = (async () => {
     try {
-      const data = await api.choiceQuiz();
+      const data = await api.choiceQuiz(state.edition);
       const items = Array.isArray(data) ? data : data?.items;
       if (!Array.isArray(items) || !items.length) throw new Error("题库是空的");
       state.quiz = items.map((item, index) => ({
@@ -818,6 +830,7 @@ async function generateReport({ topCombos = 3, windowStart = 0, quiet = false } 
     const data = await api.choiceReport({
       province: state.province,
       answers: state.answers,
+      edition: state.edition,
       topCombos,
       topMajors: 12,
     });
@@ -1871,6 +1884,37 @@ function trapLayerKeys(event, root, close) {
   } else if (!event.shiftKey && document.activeElement === last) {
     event.preventDefault();
     first.focus();
+  }
+}
+
+function applyEdition(edition) {
+  if (edition !== "simple" && edition !== "deep") return;
+  if (state.edition === edition) return;
+  state.edition = edition;
+  // 换版本等于换题库：已答的题和进度都要作废，避免把 23 题的答案套到 56 题上
+  state.quizReady = false;
+  state.quizPromise = null;
+  state.quiz = [];
+  state.answers = {};
+  state.quizIndex = 0;
+  state.pendingQuizIndex = null;
+
+  const seg = byId("wz-edition-seg");
+  if (seg) {
+    seg.querySelectorAll("[data-edition]").forEach((node) => {
+      node.classList.toggle("is-active", node.dataset.edition === edition);
+      node.setAttribute("aria-pressed", node.dataset.edition === edition ? "true" : "false");
+    });
+  }
+  const title = byId("wz-step-2-title");
+  if (title) title.textContent = `${edition === "deep" ? 56 : 23} 道题，凭第一反应答`;
+  const clock = byId("wz-quiz-clock");
+  if (clock) clock.textContent = `约 ${edition === "deep" ? 14 : 6} 分钟`;
+  const clock2 = byId("wz-start-clock");
+  if (clock2) clock2.textContent = `${edition === "deep" ? 56 : 23} 题 · 约 ${edition === "deep" ? 14 : 6} 分钟`;
+
+  if (state.step === 2) {
+    ensureQuiz();
   }
 }
 

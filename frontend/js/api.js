@@ -198,9 +198,10 @@ export const api = {
     return request("/api/choice/meta");
   },
 
-  /** 23 道题，只给题干与选项，不含计分权重 */
-  choiceQuiz() {
-    return request("/api/choice/quiz");
+  /** 两版题库（simple 23 题 / deep 56 题），只给题干与选项，不含计分权重 */
+  choiceQuiz(edition = "simple") {
+    const params = new URLSearchParams({ edition });
+    return request(`/api/choice/quiz?${params}`);
   },
 
   /** 某省的全部选科组合，用于第 1 步解释「你们省有几种选法」 */
@@ -210,13 +211,14 @@ export const api = {
   },
 
   /** 规则引擎出报告；top_combos 取 1–6，换一批就靠它多要几组 */
-  choiceReport({ province, answers, topCombos = 3, topMajors = 12 }) {
+  choiceReport({ province, answers, topCombos = 3, topMajors = 12, edition = "simple" }) {
     return request("/api/choice/report", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         province,
         answers,
+        edition,
         top_combos: Number(topCombos),
         top_majors: Number(topMajors),
       }),

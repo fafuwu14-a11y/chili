@@ -152,11 +152,11 @@ COMBO_WATCH = {
 # --------------------------------------------------------------------------
 # 归一化基准：每个维度理论上能拿到的最大原始分
 # --------------------------------------------------------------------------
-def _dimension_max() -> dict[str, dict[str, float]]:
+def _dimension_max(questions=None) -> dict[str, dict[str, float]]:
     maxima: dict[str, dict[str, float]] = {
         "subject": {}, "ability": {}, "cluster": {},
     }
-    for q in choice_quiz.QUESTIONS:
+    for q in (questions or choice_quiz.QUESTIONS):
         if q["kind"] == "single":
             for bucket in ("subject", "ability", "cluster"):
                 best: dict[str, float] = {}
@@ -170,7 +170,18 @@ def _dimension_max() -> dict[str, dict[str, float]]:
     return maxima
 
 
-_MAX = _dimension_max()
+_MAX_CACHE: dict[int, dict[str, dict[str, float]]] = {}
+
+
+def _max_for(questions) -> dict[str, dict[str, float]]:
+    """按题库缓存归一化基准：两版题量不同，不能用同一套最大值。"""
+    key = id(questions)
+    if key not in _MAX_CACHE:
+        _MAX_CACHE[key] = _dimension_max(questions)
+    return _MAX_CACHE[key]
+
+
+_MAX = _max_for(choice_quiz.QUESTIONS)
 
 
 def _normalise(raw: dict[str, float], maxima: dict[str, float]) -> dict[str, int]:
@@ -255,14 +266,15 @@ def _tendency(subject_scores: dict[str, int], tech_allowed: bool | None = None) 
     }
 
 
-def score(answers: dict) -> dict:
+def score(answers: dict, questions=None) -> dict:
     """问卷答案 → 四个维度的 0-100 画像。"""
+    bank = questions or choice_quiz.QUESTIONS
     raw: dict[str, dict[str, float]] = {
         "subject": {}, "ability": {}, "cluster": {},
     }
     values: dict[str, float] = {k: 0.0 for k in choice_quiz.VALUE_KEYS}
 
-    for q in choice_quiz.QUESTIONS:
+    for q in bank:
         value = answers.get(q["id"])
         if value is None:
             continue
@@ -283,10 +295,11 @@ def score(answers: dict) -> dict:
             elif q["group"] == "value":
                 values[q["dim"]] = values.get(q["dim"], 0) + contribution
 
+    maxima = _max_for(bank)
     profile = {
-        "subject": _normalise(raw["subject"], _MAX["subject"]),
-        "ability": _normalise(raw["ability"], _MAX["ability"]),
-        "cluster": _normalise(raw["cluster"], _MAX["cluster"]),
+        "subject": _normalise(raw["subject"], maxima["subject"]),
+        "ability": _normalise(raw["ability"], maxima["ability"]),
+        "cluster": _normalise(raw["cluster"], maxima["cluster"]),
         "value": {k: int(round(min(100, v))) for k, v in values.items()},
     }
     profile["top_subjects"] = sorted(
@@ -482,15 +495,16 @@ def _restrict_profile(profile: dict, province: str) -> dict:
     return profile
 
 
-def build_report(answers: dict, province: str, majors: list[dict], *, top_combos: int = 3, top_majors: int = 12) -> dict:
+def build_report(answers: dict, province: str, majors: list[dict], *, top_combos: int = 3, top_majors: int = 12, edition: str = "simple") -> dict:
     """一次给全：画像 + 组合 + 专业，前端和 AI 都吃这一份。"""
-    errors = choice_quiz.validate(answers)
+    bank = choice_quiz.questions_for(edition)
+    errors = choice_quiz.validate(answers, edition)
     if errors:
         return {"ok": False, "errors": errors}
     if province not in subjects.PROVINCES:
         return {"ok": False, "errors": [f"未知省份 {province!r}"]}
 
-    profile = _restrict_profile(score(answers), province)
+    profile = _restrict_profile(score(answers, bank), province)
     combos = recommend_combos(profile, province, majors, top=top_combos)
     best = combos[0]
     majors_top = recommend_majors(profile, best["subjects"], majors, top=top_majors)
@@ -506,5 +520,7 @@ def build_report(answers: dict, province: str, majors: list[dict], *, top_combos
         "meta": {
             "combos_available": len(subjects.combos(province)),
             "majors_total": len(majors),
+            "edition": edition,
+            "answered": len(answers),
         },
     }

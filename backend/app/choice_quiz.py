@@ -333,13 +333,13 @@ def get(question_id: str):
     return _BY_ID.get(question_id)
 
 
-def public_questions() -> list[dict]:
+def public_questions(edition: str = "simple") -> list[dict]:
     """给前端渲染用的题目：**不含 scores**。
 
     权重留在服务端，前端拿到的只是题干和选项文案；改前端也刷不出分。
     """
     items: list[dict] = []
-    for q in QUESTIONS:
+    for q in questions_for(edition):
         item = {
             key: q[key]
             for key in ("id", "kind", "group", "topic", "dim", "title", "hint")
@@ -351,18 +351,24 @@ def public_questions() -> list[dict]:
     return items
 
 
-def meta() -> dict:
+def meta(edition: str = "simple") -> dict:
     """给前端做开场页的元信息。"""
-    single = sum(1 for q in QUESTIONS if q["kind"] == "single")
-    scale = sum(1 for q in QUESTIONS if q["kind"] == "scale")
+    bank = questions_for(edition)
+    spec = SPEC_INDEX.get(edition, SPEC_SIMPLE)
+    single = sum(1 for q in bank if q["kind"] == "single")
+    scale = sum(1 for q in bank if q["kind"] == "scale")
     groups: dict[str, int] = {}
-    for q in QUESTIONS:
+    for q in bank:
         groups[q["group"]] = groups.get(q["group"], 0) + 1
     return {
-        "count": len(QUESTIONS),
+        "count": len(bank),
         "single": single,
         "scales": scale,
-        "minutes": 6,
+        "minutes": spec["minutes"],
+        "edition": spec["key"],
+        "editions": [
+            {k: v for k, v in s.items() if k != "groups"} for s in SPECS
+        ],
         "groups": groups,
         "subjects": [{"key": k, "name": SUBJECT_NAMES[k]} for k in SUBJECT_KEYS],
         "abilities": [{"key": k, "name": ABILITY_NAMES[k]} for k in ABILITY_KEYS],
@@ -372,12 +378,12 @@ def meta() -> dict:
     }
 
 
-def validate(answers: dict) -> list[str]:
+def validate(answers: dict, edition: str = "simple") -> list[str]:
     """检查答案是否完整合法，返回错误信息列表（空列表 = 通过）。"""
     errors: list[str] = []
     if not isinstance(answers, dict):
         return ["answers 必须是 {题号: 选项} 的对象"]
-    for q in QUESTIONS:
+    for q in questions_for(edition):
         qid = q["id"]
         if qid not in answers:
             errors.append(f"缺少第 {qid} 题")
@@ -396,3 +402,473 @@ def validate(answers: dict) -> list[str]:
             if not 1 <= num <= 5:
                 errors.append(f"第 {qid} 题打分 {num} 超出 1-5")
     return errors
+
+# --------------------------------------------------------------------------
+# 深度版追加题（q24 起）：简易版不含这些题
+# --------------------------------------------------------------------------
+# 设计原则和前面一致：问具体场景，不问「你喜不喜欢这门课」。
+# 简易版 23 题能分出大方向；深度版补的是「同一方向里到底偏向哪一支」——
+# 比如同样偏理科，是更喜欢动手做装置，还是更喜欢坐下来推公式。
+EXTRA_QUESTIONS = (
+    # ---------------- C 组：学科细分（10 题） ----------------
+    {
+        "id": "q24", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "物理里这几块内容，哪一块你愿意多花一小时？",
+        "hint": "不用管哪块好考，想哪块你想得下去。",
+        "options": [
+            {"id": "a", "text": "力学与运动：为什么球这样飞、车这样刹",
+             "scores": {"subject": {"physics": 3}, "ability": {"logic": 2, "spatial": 1}, "cluster": {"eng": 2, "sci": 1}}, "tags": ["physics"]},
+            {"id": "b", "text": "电与磁：电路怎么搭、信号怎么走",
+             "scores": {"subject": {"physics": 2, "technology": 2}, "ability": {"handson": 2}, "cluster": {"tech": 2, "eng": 2}}, "tags": ["electric"]},
+            {"id": "c", "text": "光学与波动：彩虹、透镜、声音的传播",
+             "scores": {"subject": {"physics": 3}, "ability": {"spatial": 2}, "cluster": {"sci": 3}}, "tags": ["optics"]},
+            {"id": "d", "text": "原子与量子：看不见的世界怎么运作",
+             "scores": {"subject": {"physics": 3, "chemistry": 1}, "ability": {"logic": 2}, "cluster": {"sci": 3}}, "tags": ["quantum"]},
+        ],
+    },
+    {
+        "id": "q25", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "化学实验课给你三样东西，你最想拿哪个开始？",
+        "hint": "想「手伸向哪个」，不是「哪个分高」。",
+        "options": [
+            {"id": "a", "text": "几种溶液和试纸：我想看它们混起来会怎样",
+             "scores": {"subject": {"chemistry": 3}, "ability": {"handson": 2}, "cluster": {"sci": 3}}, "tags": ["chem"]},
+            {"id": "b", "text": "一台分析仪器：我想知道它怎么测出成分",
+             "scores": {"subject": {"chemistry": 2, "physics": 1}, "ability": {"data": 2}, "cluster": {"sci": 2, "tech": 1}}, "tags": ["instrument"]},
+            {"id": "c", "text": "一堆药品说明书：我想搞清楚这些成分干什么用",
+             "scores": {"subject": {"chemistry": 2, "biology": 2}, "cluster": {"med": 3}}, "tags": ["pharma"]},
+            {"id": "d", "text": "土壤和水样：我想测测这片地到底怎么样",
+             "scores": {"subject": {"chemistry": 1, "geography": 2, "biology": 1}, "cluster": {"agri": 3, "sci": 1}}, "tags": ["env"]},
+        ],
+    },
+    {
+        "id": "q26", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "生物里你最想搞清楚的是哪一面？",
+        "hint": "生物在不同人眼里是完全不同的学科。",
+        "options": [
+            {"id": "a", "text": "身体怎么运作、病是怎么来的",
+             "scores": {"subject": {"biology": 3, "chemistry": 1}, "cluster": {"med": 3}}, "tags": ["bio"]},
+            {"id": "b", "text": "基因、细胞、遗传规律",
+             "scores": {"subject": {"biology": 3}, "ability": {"logic": 2}, "cluster": {"sci": 2, "med": 1}}, "tags": ["gene"]},
+            {"id": "c", "text": "生态、物种、环境之间怎么互相影响",
+             "scores": {"subject": {"biology": 2, "geography": 2}, "cluster": {"agri": 2, "sci": 2}}, "tags": ["eco"]},
+            {"id": "d", "text": "动植物怎么养、怎么种、怎么改良",
+             "scores": {"subject": {"biology": 2}, "ability": {"handson": 2}, "cluster": {"agri": 3, "edu": 1}}, "tags": ["farm"]},
+        ],
+    },
+    {
+        "id": "q27", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "班级要定一条新规则，讨论时你最想争的是？",
+        "hint": "这条其实在测你对「制度怎么运转」的兴趣。",
+        "options": [
+            {"id": "a", "text": "这条规则对每个人是不是公平",
+             "scores": {"subject": {"politics": 3}, "cluster": {"law": 3, "social": 1}}, "tags": ["politics"]},
+            {"id": "b", "text": "执行起来成本高不高、能不能落地",
+             "scores": {"subject": {"politics": 1}, "ability": {"logic": 2}, "cluster": {"biz": 2, "law": 1}}, "tags": ["biz"]},
+            {"id": "c", "text": "大家愿不愿意接受、怎么说服人",
+             "scores": {"subject": {"politics": 2}, "ability": {"expression": 2}, "cluster": {"social": 3, "edu": 1}}, "tags": ["social"]},
+            {"id": "d", "text": "有没有先例、别的班怎么做的",
+             "scores": {"subject": {"history": 2, "politics": 1}, "ability": {"memory": 2}, "cluster": {"law": 2, "humanities": 1}}, "tags": ["history"]},
+        ],
+    },
+    {
+        "id": "q28", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "给你一摞没人整理过的旧档案，你会先干什么？",
+        "hint": "历史不是背年份，是处理材料。",
+        "options": [
+            {"id": "a", "text": "按时间排好，理出事情发生的顺序",
+             "scores": {"subject": {"history": 3}, "ability": {"memory": 2, "logic": 1}, "cluster": {"humanities": 3}}, "tags": ["history"]},
+            {"id": "b", "text": "找里面的矛盾和漏洞，看谁在说谎",
+             "scores": {"subject": {"history": 2, "politics": 1}, "ability": {"logic": 2}, "cluster": {"law": 2, "social": 1}}, "tags": ["logic"]},
+            {"id": "c", "text": "看里面的人怎么生活、怎么想事情",
+             "scores": {"subject": {"history": 2}, "ability": {"expression": 1}, "cluster": {"humanities": 3, "art": 1}}, "tags": ["humanities"]},
+            {"id": "d", "text": "把里面的数字和表格整理出来做统计",
+             "scores": {"subject": {"history": 1}, "ability": {"data": 3}, "cluster": {"biz": 2, "sci": 1}}, "tags": ["data"]},
+        ],
+    },
+    {
+        "id": "q29", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "拿到一张陌生地区的地图，你最想从上面读出什么？",
+        "hint": "地理既是文科也是理科，看你往哪边靠。",
+        "options": [
+            {"id": "a", "text": "这里为什么长成这样：山脉、河流、气候",
+             "scores": {"subject": {"geography": 3}, "cluster": {"sci": 2}}, "tags": ["geo"]},
+            {"id": "b", "text": "这里的人靠什么活：产业、交通、城市",
+             "scores": {"subject": {"geography": 2, "politics": 1}, "cluster": {"biz": 2, "social": 1}}, "tags": ["econ"]},
+            {"id": "c", "text": "这块地的边界和归属有什么讲究",
+             "scores": {"subject": {"geography": 2, "politics": 2}, "cluster": {"law": 2, "social": 2}}, "tags": ["border"]},
+            {"id": "d", "text": "我想自己画一张更清楚的图",
+             "scores": {"subject": {"geography": 2, "technology": 1}, "ability": {"spatial": 3}, "cluster": {"art": 1, "tech": 2}}, "tags": ["spatial"]},
+        ],
+    },
+    {
+        "id": "q30", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "有件事你每周要重复做三小时，你最想怎么处理它？",
+        "hint": "这题测的是「技术」这门课在你身上有没有根。",
+        "options": [
+            {"id": "a", "text": "写个小工具让它自动跑，我一次搞定",
+             "scores": {"subject": {"technology": 3}, "ability": {"logic": 2, "data": 1}, "cluster": {"tech": 3}}, "tags": ["tech"]},
+            {"id": "b", "text": "做个物理装置替代手工，省力就行",
+             "scores": {"subject": {"technology": 2, "physics": 1}, "ability": {"handson": 3, "spatial": 1}, "cluster": {"eng": 3}}, "tags": ["eng"]},
+            {"id": "c", "text": "重新设计流程，让它根本不需要做",
+             "scores": {"ability": {"logic": 2}, "cluster": {"biz": 2, "tech": 1}}, "tags": ["biz"]},
+            {"id": "d", "text": "找人分工，我只做最擅长那段",
+             "scores": {"ability": {"expression": 2}, "cluster": {"social": 2, "biz": 1}}, "tags": ["social"]},
+        ],
+    },
+    {
+        "id": "q31", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "下面哪个「交叉问题」最让你想深挖？",
+        "hint": "交叉学科是选科时最容易被忽略的机会。",
+        "options": [
+            {"id": "a", "text": "用算法预测一种材料的性能",
+             "scores": {"subject": {"technology": 2, "chemistry": 1, "physics": 1}, "cluster": {"tech": 2, "sci": 2}}, "tags": ["tech"]},
+            {"id": "b", "text": "某种疾病在人群里为什么这样分布",
+             "scores": {"subject": {"biology": 2, "geography": 1}, "ability": {"data": 2}, "cluster": {"med": 2, "sci": 1}}, "tags": ["med"]},
+            {"id": "c", "text": "一项政策出台后，普通家庭会怎么变",
+             "scores": {"subject": {"politics": 2, "history": 1}, "cluster": {"social": 3, "law": 1}}, "tags": ["social"]},
+            {"id": "d", "text": "机器能不能理解人的语言和情绪",
+             "scores": {"subject": {"technology": 2}, "ability": {"logic": 2}, "cluster": {"tech": 3, "humanities": 1}}, "tags": ["ai"]},
+        ],
+    },
+    {
+        "id": "q32", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "一门课你学得吃力但确实有意思，你会？",
+        "hint": "吃力时的选择，比顺风时更能说明你会走多远。",
+        "options": [
+            {"id": "a", "text": "多花时间啃，难才有意思",
+             "scores": {"ability": {"logic": 2, "memory": 1}, "cluster": {"sci": 2}}, "tags": ["persist"]},
+            {"id": "b", "text": "找同学一起讨论，边讲边理",
+             "scores": {"ability": {"expression": 2}, "cluster": {"edu": 2, "social": 1}}, "tags": ["social"]},
+            {"id": "c", "text": "先把能拿的分拿到，剩下的不较劲",
+             "scores": {"value": {"stability": 1}, "cluster": {"biz": 1}}, "tags": ["pragmatic"]},
+            {"id": "d", "text": "换个角度理解它，找和生活的联系",
+             "scores": {"ability": {"spatial": 1}, "cluster": {"humanities": 1, "art": 1}}, "tags": ["creative"]},
+        ],
+    },
+    {
+        "id": "q33", "kind": "single", "group": "interest", "topic": "学科细分",
+        "title": "同一门课，哪种学法你最舒服？",
+        "hint": "方法适配比内容偏好更能预测成绩。",
+        "options": [
+            {"id": "a", "text": "刷题、总结规律，越练越熟",
+             "scores": {"ability": {"logic": 2, "memory": 1}, "cluster": {"sci": 1, "eng": 1}}, "tags": ["drill"]},
+            {"id": "b", "text": "看书、写笔记，自己慢慢想通",
+             "scores": {"ability": {"memory": 2}, "cluster": {"humanities": 2, "med": 1}}, "tags": ["read"]},
+            {"id": "c", "text": "动手做、实际试一遍",
+             "scores": {"ability": {"handson": 3}, "cluster": {"eng": 2, "agri": 1}}, "tags": ["handson"]},
+            {"id": "d", "text": "给别人讲一遍，讲明白才算学会",
+             "scores": {"ability": {"expression": 3}, "cluster": {"edu": 3, "social": 1}}, "tags": ["teach"]},
+        ],
+    },
+
+    # ---------------- D 组：专业情境·深度（12 题，十二个簇各一题） ----------------
+    {
+        "id": "q34", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "让你负责一个「让校园更智能」的小项目，你挑哪块？",
+        "hint": "信息与智能这一类里，其实分很多活。",
+        "options": [
+            {"id": "a", "text": "写一个能自动回答问题的机器人",
+             "scores": {"cluster": {"tech": 3}, "ability": {"logic": 2}, "subject": {"technology": 2}}, "tags": ["tech"]},
+            {"id": "b", "text": "设计一套传感器，采集教室的温湿度",
+             "scores": {"cluster": {"tech": 2, "eng": 2}, "ability": {"handson": 2}, "subject": {"physics": 1}}, "tags": ["iot"]},
+            {"id": "c", "text": "分析校园卡数据，看学生什么时候最忙",
+             "scores": {"cluster": {"tech": 1, "biz": 2, "sci": 1}, "ability": {"data": 3}}, "tags": ["data"]},
+            {"id": "d", "text": "做界面和交互，让它看起来好用",
+             "scores": {"cluster": {"art": 2, "tech": 2}, "ability": {"spatial": 1}}, "tags": ["design"]},
+        ],
+    },
+    {
+        "id": "q35", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "一座小桥要重修，你觉得最关键的环节是？",
+        "hint": "工程与制造看的是你对「造东西」的哪一环有感觉。",
+        "options": [
+            {"id": "a", "text": "算清楚受力，保证不会塌",
+             "scores": {"cluster": {"eng": 3}, "ability": {"logic": 2, "spatial": 1}, "subject": {"physics": 2}}, "tags": ["struct"]},
+            {"id": "b", "text": "选材料、定工艺，控制成本",
+             "scores": {"cluster": {"eng": 2, "biz": 2}, "subject": {"chemistry": 1}}, "tags": ["material"]},
+            {"id": "c", "text": "现场组织施工、盯进度",
+             "scores": {"cluster": {"eng": 2, "social": 1}, "ability": {"expression": 1}}, "tags": ["site"]},
+            {"id": "d", "text": "设计成好看的地标",
+             "scores": {"cluster": {"art": 2, "eng": 2}, "ability": {"spatial": 3}}, "tags": ["design"]},
+        ],
+    },
+    {
+        "id": "q36", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "医院里这些岗位，哪个你更愿意站一天？",
+        "hint": "学医不只是当临床医生。",
+        "options": [
+            {"id": "a", "text": "门诊：一个个病人看过去，快速判断",
+             "scores": {"cluster": {"med": 3}, "ability": {"logic": 1, "memory": 1}, "subject": {"biology": 2}}, "tags": ["clinic"]},
+            {"id": "b", "text": "手术室：精细操作，一站几个小时",
+             "scores": {"cluster": {"med": 3}, "ability": {"handson": 3}, "subject": {"biology": 2}}, "tags": ["surgery"]},
+            {"id": "c", "text": "检验科：对着仪器和样本出结果",
+             "scores": {"cluster": {"med": 2, "sci": 2}, "ability": {"data": 2}, "subject": {"chemistry": 2}}, "tags": ["lab"]},
+            {"id": "d", "text": "公共卫生：管一片人群的健康",
+             "scores": {"cluster": {"med": 1, "social": 2, "law": 1}, "ability": {"data": 1}}, "tags": ["public"]},
+        ],
+    },
+    {
+        "id": "q37", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "给你一块地，你最想用它做什么？",
+        "hint": "农林与食品不只是种地。",
+        "options": [
+            {"id": "a", "text": "试种新品种，看哪种产量高品质好",
+             "scores": {"cluster": {"agri": 3}, "subject": {"biology": 2}, "ability": {"handson": 2}}, "tags": ["crop"]},
+            {"id": "b", "text": "办个加工厂，把农产品做成能卖的东西",
+             "scores": {"cluster": {"agri": 2, "biz": 2}, "subject": {"chemistry": 1}}, "tags": ["food"]},
+            {"id": "c", "text": "做成生态农场，搞观光和研学",
+             "scores": {"cluster": {"agri": 2, "social": 1, "biz": 1}, "ability": {"expression": 1}}, "tags": ["eco"]},
+            {"id": "d", "text": "研究这块地的土壤和微生物",
+             "scores": {"cluster": {"agri": 1, "sci": 3}, "subject": {"biology": 2, "chemistry": 1}}, "tags": ["soil"]},
+        ],
+    },
+    {
+        "id": "q38", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "「基础科学」这一类，你最想追的是哪个问题？",
+        "hint": "基础科学要能长期忍受「暂时没用」。",
+        "options": [
+            {"id": "a", "text": "宇宙怎么来的、物质最基本是什么",
+             "scores": {"cluster": {"sci": 3}, "subject": {"physics": 3}, "ability": {"logic": 2}}, "tags": ["physics"]},
+            {"id": "b", "text": "生命最初是怎么出现的",
+             "scores": {"cluster": {"sci": 2, "med": 1}, "subject": {"biology": 3}}, "tags": ["bio"]},
+            {"id": "c", "text": "数学里那些「没用但很美」的结构",
+             "scores": {"cluster": {"sci": 3}, "subject": {"physics": 1}, "ability": {"logic": 3}}, "tags": ["math"]},
+            {"id": "d", "text": "气候和地球系统怎么演化",
+             "scores": {"cluster": {"sci": 2, "agri": 1}, "subject": {"geography": 3}}, "tags": ["geo"]},
+        ],
+    },
+    {
+        "id": "q39", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "学校旁边有家店一直亏钱，你觉得该先看什么？",
+        "hint": "经济与管理看的是你对「钱怎么流动」的直觉。",
+        "options": [
+            {"id": "a", "text": "账本：收入和支出各是什么结构",
+             "scores": {"cluster": {"biz": 3}, "ability": {"data": 2}}, "tags": ["account"]},
+            {"id": "b", "text": "客人：为什么来过一次就不来了",
+             "scores": {"cluster": {"biz": 2, "social": 1}, "ability": {"expression": 1}}, "tags": ["market"]},
+            {"id": "c", "text": "对手：旁边那家为什么活得好",
+             "scores": {"cluster": {"biz": 3}, "ability": {"logic": 2}}, "tags": ["strategy"]},
+            {"id": "d", "text": "行业：这条路以后会不会没人走",
+             "scores": {"cluster": {"biz": 2, "sci": 1}, "subject": {"politics": 1}}, "tags": ["trend"]},
+        ],
+    },
+    {
+        "id": "q40", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "小区要为加装电梯投票，你最想扮演什么角色？",
+        "hint": "法学与公共事务关心的是「规则怎么定、怎么执行」。",
+        "options": [
+            {"id": "a", "text": "查清相关规定，看程序合不合法",
+             "scores": {"cluster": {"law": 3}, "ability": {"memory": 2}, "subject": {"politics": 2}}, "tags": ["law"]},
+            {"id": "b", "text": "组织投票、把各方意见汇总",
+             "scores": {"cluster": {"social": 2, "law": 1}, "ability": {"expression": 2}}, "tags": ["organize"]},
+            {"id": "c", "text": "算清费用分摊，找最优方案",
+             "scores": {"cluster": {"biz": 2}, "ability": {"data": 2}}, "tags": ["cost"]},
+            {"id": "d", "text": "站在老人和低层住户角度想问题",
+             "scores": {"cluster": {"social": 2, "edu": 1}, "ability": {"expression": 1}}, "tags": ["empathy"]},
+        ],
+    },
+    {
+        "id": "q41", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "让你带一个十二人的小组，你最想改进哪件事？",
+        "hint": "教育与体育的核心是「让人变好」。",
+        "options": [
+            {"id": "a", "text": "把复杂知识讲得谁都听得懂",
+             "scores": {"cluster": {"edu": 3}, "ability": {"expression": 3}}, "tags": ["teach"]},
+            {"id": "b", "text": "设计一套训练计划，让他们体能上去",
+             "scores": {"cluster": {"edu": 2, "med": 1}, "ability": {"handson": 2}}, "tags": ["sport"]},
+            {"id": "c", "text": "摸清每个人卡在哪，单独给方案",
+             "scores": {"cluster": {"edu": 2, "social": 1}, "ability": {"logic": 1}}, "tags": ["coach"]},
+            {"id": "d", "text": "做一套评估，量化他们进步了多少",
+             "scores": {"cluster": {"edu": 1, "sci": 1}, "ability": {"data": 2}}, "tags": ["assess"]},
+        ],
+    },
+    {
+        "id": "q42", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "「把一件复杂的事讲给别人听」，你会选哪种形式？",
+        "hint": "人文与语言不只是写作文。",
+        "options": [
+            {"id": "a", "text": "写一篇结构清楚的深度文章",
+             "scores": {"cluster": {"humanities": 3}, "ability": {"expression": 3}, "subject": {"history": 1}}, "tags": ["write"]},
+            {"id": "b", "text": "做一支短片，用画面说话",
+             "scores": {"cluster": {"art": 2, "humanities": 1}, "ability": {"spatial": 1}}, "tags": ["video"]},
+            {"id": "c", "text": "翻成另一种语言，让外面的人也能懂",
+             "scores": {"cluster": {"humanities": 3}, "ability": {"memory": 2}}, "tags": ["translate"]},
+            {"id": "d", "text": "做成播客，用对话讲明白",
+             "scores": {"cluster": {"humanities": 1, "social": 2}, "ability": {"expression": 2}}, "tags": ["podcast"]},
+        ],
+    },
+    {
+        "id": "q43", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "学校要重做校服，你愿意负责哪一块？",
+        "hint": "艺术与设计里，审美和落地是两种能力。",
+        "options": [
+            {"id": "a", "text": "定整体风格和配色",
+             "scores": {"cluster": {"art": 3}, "ability": {"spatial": 2}}, "tags": ["art"]},
+            {"id": "b", "text": "画款式图，让人一眼看懂",
+             "scores": {"cluster": {"art": 3}, "ability": {"spatial": 2, "handson": 1}}, "tags": ["draw"]},
+            {"id": "c", "text": "找厂家、谈价格、控质量",
+             "scores": {"cluster": {"biz": 2, "art": 1}, "ability": {"expression": 1}}, "tags": ["biz"]},
+            {"id": "d", "text": "发问卷收集同学意见",
+             "scores": {"cluster": {"social": 2, "art": 1}, "ability": {"data": 1}}, "tags": ["survey"]},
+        ],
+    },
+    {
+        "id": "q44", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "社区里老人多、年轻人少，你觉得最该先做什么？",
+        "hint": "社会与人际关心的是一群人的处境。",
+        "options": [
+            {"id": "a", "text": "建日间照料中心，解决吃饭和看护",
+             "scores": {"cluster": {"social": 3, "med": 1}, "ability": {"expression": 1}}, "tags": ["care"]},
+            {"id": "b", "text": "组织活动，让老人有事可做",
+             "scores": {"cluster": {"social": 3, "edu": 1}, "ability": {"expression": 2}}, "tags": ["activity"]},
+            {"id": "c", "text": "调研需求，写报告争取政策支持",
+             "scores": {"cluster": {"social": 2, "law": 1}, "ability": {"data": 2}}, "tags": ["research"]},
+            {"id": "d", "text": "引入智能设备，减少人力依赖",
+             "scores": {"cluster": {"tech": 2, "social": 1}, "ability": {"logic": 1}}, "tags": ["tech"]},
+        ],
+    },
+    {
+        "id": "q45", "kind": "single", "group": "cluster", "topic": "专业情境·深入",
+        "title": "「公安与安全」这一类，你觉得哪部分最像你？",
+        "hint": "这个簇对体能、心理、纪律要求都很实。",
+        "options": [
+            {"id": "a", "text": "现场处置：突发情况下快速判断",
+             "scores": {"cluster": {"police": 3}, "ability": {"logic": 1, "handson": 2}}, "tags": ["field"]},
+            {"id": "b", "text": "案件侦破：从细节里还原真相",
+             "scores": {"cluster": {"police": 2, "law": 2}, "ability": {"logic": 2, "memory": 1}}, "tags": ["detect"]},
+            {"id": "c", "text": "技术取证：数据和设备里找证据",
+             "scores": {"cluster": {"police": 2, "tech": 2}, "ability": {"data": 2}}, "tags": ["forensic"]},
+            {"id": "d", "text": "社区警务：长期和一片人打交道",
+             "scores": {"cluster": {"police": 2, "social": 2}, "ability": {"expression": 2}}, "tags": ["community"]},
+        ],
+    },
+
+    # ---------------- E 组：能力追问（4 题，量表，同一维度换角度再测一次） ----------------
+    {
+        "id": "q46", "kind": "scale", "group": "ability", "topic": "能力追问", "dim": "spatial",
+        "title": "看到一个立体图形，我能在脑子里把它转过来、拆开看。",
+        "hint": "空间想象对工程、建筑、医学影像、设计都很关键。",
+    },
+    {
+        "id": "q47", "kind": "scale", "group": "ability", "topic": "能力追问", "dim": "logic",
+        "title": "一串条件摆在一起，我能很快看出它们能不能同时成立。",
+        "hint": "这是判断推理的核心能力。",
+    },
+    {
+        "id": "q48", "kind": "scale", "group": "ability", "topic": "能力追问", "dim": "expression",
+        "title": "我能把一件事按对方能听懂的顺序讲出来，而不是想到哪说到哪。",
+        "hint": "表达不是话多，是结构清楚。",
+    },
+    {
+        "id": "q49", "kind": "scale", "group": "ability", "topic": "能力追问", "dim": "data",
+        "title": "看到一张表格，我能很快找出里面的异常和规律。",
+        "hint": "数据感是可以练的，先按现在打分。",
+    },
+
+    # ---------------- F 组：现实约束与价值观追问（7 题） ----------------
+    {
+        "id": "q50", "kind": "scale", "group": "value", "topic": "价值追问", "dim": "stability",
+        "title": "比起「有意思」，我更希望将来的工作「靠得住、不会被淘汰」。",
+        "hint": "按你真实的第一反应打分。",
+    },
+    {
+        "id": "q51", "kind": "scale", "group": "value", "topic": "价值追问", "dim": "salary",
+        "title": "我愿意为了更高的收入，接受更长的工作时间和更大的压力。",
+        "hint": "想想你能不能长期这样过。",
+    },
+    {
+        "id": "q52", "kind": "scale", "group": "value", "topic": "价值追问", "dim": "research",
+        "title": "读研、读博这条更长的路，我愿意认真考虑。",
+        "hint": "医学、法学、基础科学都绕不开。",
+    },
+    {
+        "id": "q53", "kind": "scale", "group": "value", "topic": "价值追问", "dim": "interest",
+        "title": "就算收入一般，我也想做自己真正感兴趣的事。",
+        "hint": "这题和上一题是刻意冲突的，选更像你的那个。",
+    },
+    {
+        "id": "q54", "kind": "single", "group": "value", "topic": "现实约束",
+        "title": "家里对你选专业的态度，最接近哪一种？",
+        "hint": "这题影响的是「可行性」，不是「对错」。",
+        "options": [
+            {"id": "a", "text": "完全由我定，他们支持",
+             "scores": {"value": {"interest": 2}, "cluster": {"art": 1, "humanities": 1}}, "tags": ["free"]},
+            {"id": "b", "text": "会强烈建议，倾向稳定或体面的方向",
+             "scores": {"value": {"stability": 2}, "cluster": {"edu": 1, "law": 1, "med": 1}}, "tags": ["stable"]},
+            {"id": "c", "text": "很看重收入和发展，希望别选冷门",
+             "scores": {"value": {"salary": 2}, "cluster": {"biz": 1, "tech": 1}}, "tags": ["salary"]},
+            {"id": "d", "text": "他们不太了解，基本要靠我自己判断",
+             "scores": {"value": {"research": 1}, "cluster": {"sci": 1}}, "tags": ["alone"]},
+        ],
+    },
+    {
+        "id": "q55", "kind": "single", "group": "value", "topic": "现实约束",
+        "title": "上大学你更愿意去哪种地方？",
+        "hint": "地域会影响分数线、实习机会和生活成本。",
+        "options": [
+            {"id": "a", "text": "一线或新一线，机会多、节奏快",
+             "scores": {"value": {"salary": 1}, "cluster": {"biz": 2, "tech": 1}}, "tags": ["city"]},
+            {"id": "b", "text": "离家近，方便照顾家里",
+             "scores": {"value": {"stability": 1}, "cluster": {"edu": 1}}, "tags": ["home"]},
+            {"id": "c", "text": "哪所学校这个专业强就去哪",
+             "scores": {"value": {"research": 1}, "cluster": {"sci": 1}}, "tags": ["major"]},
+            {"id": "d", "text": "生活成本低的地方，压力小一点",
+             "scores": {"value": {"stability": 1}}, "tags": ["cost"]},
+        ],
+    },
+    {
+        "id": "q56", "kind": "single", "group": "value", "topic": "现实约束",
+        "title": "有些专业要读五年以上、学费也高，你会怎么想？",
+        "hint": "这是很多家庭真正卡住的地方。",
+        "options": [
+            {"id": "a", "text": "只要能学到东西，时间和钱都值得",
+             "scores": {"value": {"research": 3}, "cluster": {"med": 1, "sci": 1}}, "tags": ["long"]},
+            {"id": "b", "text": "要看回报，毕业能不能挣回来",
+             "scores": {"value": {"salary": 2}, "cluster": {"biz": 1}}, "tags": ["roi"]},
+            {"id": "c", "text": "尽量选四年制，早点工作",
+             "scores": {"value": {"stability": 1}, "cluster": {"tech": 1, "eng": 1}}, "tags": ["short"]},
+            {"id": "d", "text": "先看能不能申请助学或奖学金",
+             "scores": {"value": {"research": 1}, "cluster": {"edu": 1}}, "tags": ["aid"]},
+        ],
+    },
+)
+
+
+# --------------------------------------------------------------------------
+# 两版规格
+# --------------------------------------------------------------------------
+SPEC_SIMPLE = {
+    "key": "simple",
+    "name": "简易测试",
+    "count": len(QUESTIONS),
+    "minutes": 6,
+    "level": "6 分钟",
+    "desc": "23 道情景题，四选一为主。测学科趣味、能力自评、专业簇、价值取向，答完直接出选科组合建议。",
+    "covers": ["学科趣味", "能力自评", "专业情境", "价值取向"],
+    "groups": ["interest", "ability", "cluster", "value"],
+}
+
+SPEC_DEEP = {
+    "key": "deep",
+    "name": "深度测试",
+    "count": len(QUESTIONS) + len(EXTRA_QUESTIONS),
+    "minutes": 14,
+    "level": "14 分钟",
+    "desc": "56 题八段式：在简易版基础上加学科细分 10 题、专业情境深入到十二个簇各一题、能力追问 4 题、现实约束与价值观 7 题。能区分同一方向里的具体分支。",
+    "covers": ["学科趣味", "学科细分", "能力自评", "专业情境", "专业情境·深入", "价值取向", "现实约束"],
+    "groups": ["interest", "ability", "cluster", "value"],
+}
+
+SPECS = (SPEC_SIMPLE, SPEC_DEEP)
+SPEC_INDEX = {spec["key"]: spec for spec in SPECS}
+
+QUESTIONS_BY_EDITION = {
+    "simple": QUESTIONS,
+    "deep": QUESTIONS + EXTRA_QUESTIONS,
+}
+
+
+def questions_for(edition: str = "simple"):
+    """按版本取题库，未知版本回落到简易版。"""
+    return QUESTIONS_BY_EDITION.get(edition) or QUESTIONS_BY_EDITION["simple"]
