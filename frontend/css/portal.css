@@ -1818,3 +1818,16 @@ body.lm-scroll-lock {
   border-color: #d92b3a;
   color: #fff;
 }
+
+/* 极简四字主标题：字少就要字大，靠字重和留白撑住版面 */
+.hp-hero h1.hp-hero-title--short {
+  font-size: clamp(52px, 7.8vw, 96px);
+  line-height: .98;
+  letter-spacing: .02em;
+}
+.hp-hero h1.hp-hero-title--short em {
+  margin-left: .06em;
+}
+@media (max-width: 700px) {
+  .hp-hero h1.hp-hero-title--short { font-size: clamp(44px, 11vw, 64px); }
+}
