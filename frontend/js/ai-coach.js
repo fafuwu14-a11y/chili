@@ -100,7 +100,7 @@ function addAI(reply) {
       btn.addEventListener("click", () => {
         if (state.busy || state.done) return;
         pickOption(box, btn, text);
-        answer(text);
+        request(text);
       });
       box.appendChild(btn);
     });
@@ -115,7 +115,7 @@ function pickOption(box, btn, text) {
   box.classList.add("is-spent");
   btn.classList.add("is-picked");
   box.querySelectorAll("button").forEach((node) => {
-    node.disabled = node !== btn;
+    node.disabled = true;
   });
 }
 
