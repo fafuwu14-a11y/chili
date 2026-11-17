@@ -1,0 +1,210 @@
+/* 培优扶弱页：复用 portal.css 的 hp- 组件，这里只补 gr- 前缀部分。 */
+
+.gr-page {
+  background: radial-gradient(1100px 520px at 88% -8%, rgba(230, 0, 18, .07), transparent 62%),
+    radial-gradient(760px 420px at 4% 4%, rgba(201, 162, 39, .09), transparent 58%),
+    var(--bg);
+}
+
+.gr-skip {
+  position: absolute; left: -9999px; top: 0; z-index: 60;
+  padding: 10px 16px; border-radius: 0 0 12px 0;
+  background: var(--red); color: #fff; font-size: 14px;
+}
+.gr-skip:focus { left: 0; }
+
+.gr-main {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 28px 96px;
+  outline: none;
+}
+
+/* ---------- 页头 ---------- */
+.gr-head { max-width: 760px; margin-bottom: 34px; }
+
+.gr-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: 13px; letter-spacing: .16em;
+  color: var(--red-700, #9c0010);
+  text-transform: uppercase;
+}
+.gr-eyebrow span {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 26px; height: 22px; padding: 0 6px;
+  border-radius: 6px; background: var(--red); color: #fff;
+  font-size: 12px; letter-spacing: .04em;
+}
+
+.gr-head h1 {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4.4vw, 48px);
+  line-height: 1.16;
+  letter-spacing: -.02em;
+  color: var(--ink);
+}
+
+.gr-lead {
+  margin: 0 0 18px;
+  font-size: 16px; line-height: 1.78;
+  color: var(--ink-2, #5c4d4e);
+}
+
+.gr-head-tags { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+
+.gr-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 999px;
+  background: rgba(230, 0, 18, .07);
+  border: 1px solid rgba(230, 0, 18, .14);
+  font-size: 12.5px; color: var(--red-700, #9c0010);
+}
+
+.gr-link {
+  font-size: 13px; color: var(--ink-2, #5c4d4e);
+  text-decoration: none; border-bottom: 1px solid var(--line, #e8dcd6);
+  padding-bottom: 1px;
+}
+.gr-link:hover { color: var(--red); border-color: var(--red); }
+
+/* ---------- 区块 ---------- */
+.gr-block {
+  margin: 0 0 42px;
+  padding: 26px 28px;
+  border-radius: var(--radius-lg, 24px);
+  background: var(--card, #fff);
+  border: 1px solid var(--line, #e8dcd6);
+  box-shadow: 0 18px 40px -32px rgba(36, 26, 27, .3);
+}
+
+.gr-block-head { margin-bottom: 20px; }
+.gr-block-head h2 {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: 20px; letter-spacing: -.01em;
+  color: var(--ink);
+}
+.gr-block-note { margin: 0; font-size: 13px; color: var(--ink-3, #8a7a76); line-height: 1.7; }
+
+/* ---------- 条形 ---------- */
+.gr-chart { display: grid; gap: 12px; }
+
+.gr-bar {
+  display: grid;
+  grid-template-columns: 52px 1fr 44px;
+  align-items: center;
+  gap: 14px;
+}
+.gr-bar-name { font-size: 14px; color: var(--ink); }
+.gr-bar-track {
+  position: relative; display: block; height: 10px;
+  border-radius: 999px; background: var(--line-soft, #f2e9e4); overflow: hidden;
+}
+.gr-bar-track i {
+  position: absolute; inset: 0 auto 0 0;
+  display: block; border-radius: 999px;
+  transition: width .5s cubic-bezier(.22, .8, .28, 1);
+}
+.gr-bar-value { font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink-2, #5c4d4e); text-align: right; }
+.gr-bar[data-level="weak"] .gr-bar-name { color: var(--ink-3, #8a7a76); }
+
+.gr-chart-note { margin: 6px 0 0; font-size: 12.5px; color: var(--ink-3, #8a7a76); }
+
+/* ---------- 卡片 ---------- */
+.gr-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+.gr-card {
+  padding: 20px 22px;
+  border-radius: 18px;
+  border: 1px solid var(--line, #e8dcd6);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(255, 248, 245, .7));
+}
+.gr-card--strong { border-color: rgba(201, 162, 39, .38); }
+.gr-card--weak { border-color: rgba(230, 0, 18, .2); }
+
+.gr-card-head { display: flex; align-items: center; gap: 10px; }
+.gr-card-head h3 { margin: 0; font-size: 17px; font-family: var(--font-display); color: var(--ink); }
+.gr-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+.gr-score {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 20px; font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.gr-card-note { margin: 6px 0 14px; font-size: 12.5px; color: var(--ink-3, #8a7a76); }
+
+.gr-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.gr-step { display: grid; grid-template-columns: 24px 1fr; gap: 10px; }
+.gr-step-no {
+  display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(201, 162, 39, .16);
+  color: #8a6d10; font-size: 12px; font-weight: 600;
+}
+.gr-step-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
+.gr-step-text { margin: 2px 0 0; font-size: 13px; line-height: 1.68; color: var(--ink-2, #5c4d4e); }
+
+.gr-weak-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.gr-weak-item { padding-left: 12px; border-left: 2px solid rgba(230, 0, 18, .22); }
+.gr-weak-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--ink); }
+.gr-weak-text { margin: 2px 0 0; font-size: 13px; line-height: 1.68; color: var(--ink-2, #5c4d4e); }
+
+/* ---------- 其他科目 ---------- */
+.gr-mid-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.gr-mid-list li {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 12px;
+  background: var(--line-soft, #f8f2ee);
+  font-size: 14px; color: var(--ink);
+}
+.gr-mid-list b { font-variant-numeric: tabular-nums; }
+.gr-mid-list em { margin-left: auto; font-style: normal; font-size: 12.5px; color: var(--ink-3, #8a7a76); }
+
+/* ---------- 边界说明 ---------- */
+.gr-note { background: linear-gradient(180deg, rgba(201, 162, 39, .07), rgba(255, 255, 255, .9)); }
+.gr-note h2 { font-size: 18px; }
+.gr-limit-list { margin: 0 0 18px; padding-left: 18px; display: grid; gap: 8px; }
+.gr-limit-list li { font-size: 13.5px; line-height: 1.75; color: var(--ink-2, #5c4d4e); }
+.gr-limit-list b { color: var(--ink); }
+
+.gr-cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 0; }
+
+.gr-empty { font-size: 13.5px; color: var(--ink-3, #8a7a76); line-height: 1.7; }
+
+.gr-foot-note { margin: 18px 0 0; font-size: 12.5px; color: var(--ink-3, #8a7a76); }
+
+/* ---------- 提示条 ---------- */
+.gr-toast {
+  position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%);
+  z-index: 70;
+  padding: 10px 18px; border-radius: 999px;
+  background: rgba(36, 26, 27, .92); color: #fff; font-size: 13px;
+  box-shadow: 0 16px 40px -20px rgba(0, 0, 0, .5);
+}
+
+/* ---------- 响应式 ---------- */
+@media (max-width: 900px) {
+  .gr-main { padding: 36px 18px 72px; }
+  .gr-block { padding: 20px 18px; border-radius: 20px; }
+  .gr-cards { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .gr-head h1 { font-size: 30px; }
+  .gr-lead { font-size: 15px; }
+  .gr-bar { grid-template-columns: 42px 1fr 36px; gap: 10px; }
+  .gr-mid-list li { flex-wrap: wrap; }
+  .gr-mid-list em { margin-left: 18px; }
+  .gr-cta-row .hp-btn { width: 100%; justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gr-bar-track i { transition: none; }
+}

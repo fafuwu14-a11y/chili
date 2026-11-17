@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>接入 AI 模型 · 赤鲤</title>
+  <meta name="description" content="赤鲤支持 13 家国内主流大模型与本地 Ollama。Key 只存在你自己的浏览器里，不上传服务器。" />
+  <meta name="theme-color" content="#E60012" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E60012'/%3E%3Cpath d='M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./css/app.css" />
+  <link rel="stylesheet" href="./css/portal.css" />
+  <link rel="stylesheet" href="./css/ai-setup.css" />
+</head>
+<body class="hp-page ai-page">
+  <a class="hp-skip" href="#ai-main">跳到主要内容</a>
+
+  <div class="hp-ambient" aria-hidden="true">
+    <span class="hp-glow hp-glow--a"></span>
+    <span class="hp-glow hp-glow--b"></span>
+    <span class="hp-glyph">鲤</span>
+  </div>
+
+  <header class="hp-header" id="hp-header">
+    <div class="hp-header-inner">
+      <a class="hp-brand" href="./index.html" aria-label="赤鲤 首页">
+        <span class="hp-brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+        </span>
+        <span class="hp-brand-text">
+          <strong>赤鲤</strong>
+          <em>高一选科规划</em>
+        </span>
+      </a>
+
+      <button class="hp-burger" id="hp-burger" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="hp-nav">
+        <span class="hp-burger-bar" aria-hidden="true"></span>
+        <span class="hp-burger-bar" aria-hidden="true"></span>
+        <span class="hp-burger-bar" aria-hidden="true"></span>
+      </button>
+
+      <nav class="hp-nav" id="hp-nav" aria-label="主导航">
+        <a class="hp-nav-link" href="./index.html">首页</a>
+        <a class="hp-nav-link" href="./wizard.html">选科测评</a>
+        <a class="hp-nav-link" href="./major.html">专业库</a>
+        <a class="hp-nav-link" href="./ai-coach.html">AI 顾问</a>
+        <a class="hp-nav-link is-active" href="./ai-setup.html" aria-current="page">接入 AI</a>
+      </nav>
+
+      <div class="hp-actions" data-login-slot>
+        <noscript><a class="hp-btn hp-btn--ghost hp-btn--sm" href="./login.html">登录 / 注册</a></noscript>
+      </div>
+    </div>
+  </header>
+
+  <main class="ai-shell" id="ai-main">
+    <section class="ai-hero" aria-labelledby="ai-title">
+      <p class="ai-eyebrow">AI · 可选增强</p>
+      <h1 id="ai-title">接上你自己的模型<br />选科建议才说得像人话</h1>
+      <p class="ai-lead">
+        规则引擎负责算分和筛专业，AI 负责追问、解释和把结果讲清楚。
+        你填的 Key 只写进这台电脑的浏览器，请求由本地服务转发，不落库、不上传。
+      </p>
+      <ul class="ai-facts">
+        <li><strong>13 家</strong><span>国内主流厂商</span></li>
+        <li><strong>本地</strong><span>支持 Ollama 免 Key</span></li>
+        <li><strong>可降级</strong><span>不填 Key 也能用规则引擎</span></li>
+      </ul>
+    </section>
+
+    <section class="ai-config" aria-labelledby="ai-config-title">
+      <div class="ai-config-head">
+        <h2 id="ai-config-title">1. 选厂商、填 Key</h2>
+        <p class="ai-config-sub">点左边任意一张卡切换厂商，默认模型和接口地址会跟着变，可手动改。</p>
+      </div>
+
+      <div class="ai-grid">
+        <div class="ai-vendors" role="listbox" aria-label="模型厂商" id="ai-vendors"></div>
+
+        <div class="ai-form">
+          <div class="ai-status" id="ai-status" role="status" aria-live="polite">
+            <span class="ai-status-dot" aria-hidden="true"></span>
+            <span class="ai-status-text">尚未配置</span>
+          </div>
+
+          <form id="ai-form" novalidate>
+            <div class="ai-field">
+              <label for="ai-provider">厂商</label>
+              <select id="ai-provider" name="provider"></select>
+            </div>
+
+            <div class="ai-field">
+              <label for="ai-key">API Key</label>
+              <div class="ai-key-row">
+                <input id="ai-key" name="key" type="password" autocomplete="off" spellcheck="false"
+                       placeholder="sk-..." aria-describedby="ai-key-hint" />
+                <button class="ai-eye" id="ai-eye" type="button" aria-pressed="false" aria-label="显示 Key">显示</button>
+              </div>
+              <p class="ai-hint" id="ai-key-hint">本地 Ollama 不需要 Key，留空即可。</p>
+            </div>
+
+            <div class="ai-field">
+              <label for="ai-model">模型</label>
+              <input id="ai-model" name="model" type="text" spellcheck="false" placeholder="留空则用厂商默认模型" />
+              <p class="ai-hint" id="ai-model-hint"></p>
+            </div>
+
+            <div class="ai-field">
+              <label for="ai-base">接口地址</label>
+              <input id="ai-base" name="base_url" type="url" spellcheck="false" placeholder="https://..." />
+              <p class="ai-hint">一般不用改；用中转或代理时才改这里。</p>
+            </div>
+
+            <div class="ai-actions">
+              <button class="hp-btn hp-btn--primary" type="submit" id="ai-save">保存到本机</button>
+              <button class="hp-btn hp-btn--ghost" type="button" id="ai-test">测试连接</button>
+              <button class="ai-clear" type="button" id="ai-clear">清除配置</button>
+            </div>
+            <p class="ai-result" id="ai-result" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="ai-steps" aria-labelledby="ai-steps-title">
+      <h2 id="ai-steps-title">2. 以 DeepSeek 为例，四步拿到 Key</h2>
+      <ol class="ai-step-list">
+        <li>
+          <span class="ai-step-no">01</span>
+          <div>
+            <h3>注册并登录开放平台</h3>
+            <p>打开 <a href="https://platform.deepseek.com" target="_blank" rel="noopener noreferrer">platform.deepseek.com</a>，用手机号注册。</p>
+          </div>
+        </li>
+        <li>
+          <span class="ai-step-no">02</span>
+          <div>
+            <h3>进「API Keys」新建密钥</h3>
+            <p>密钥只显示一次，复制后先粘到记事本。丢了就再建一个。</p>
+          </div>
+        </li>
+        <li>
+          <span class="ai-step-no">03</span>
+          <div>
+            <h3>确认账户有余额</h3>
+            <p>多数厂商新用户有赠送额度；余额为 0 时接口会返回 402 或「余额不足」。</p>
+          </div>
+        </li>
+        <li>
+          <span class="ai-step-no">04</span>
+          <div>
+            <h3>回到这里粘贴并测试</h3>
+            <p>点「测试连接」看到「连接正常」就通了，再保存。</p>
+          </div>
+        </li>
+      </ol>
+      <p class="ai-note">
+        其它 12 家的入口、默认模型和报错含义，见仓库里的
+        <code>docs/AI接入指南.md</code>。不想花钱就先装 Ollama，在本地跑 7B 模型。
+      </p>
+    </section>
+
+    <section class="ai-faq" aria-labelledby="ai-faq-title">
+      <h2 id="ai-faq-title">3. 常见问题</h2>
+      <details>
+        <summary>Key 会被上传或存到数据库吗？</summary>
+        <p>不会。Key 存在浏览器 <code>localStorage</code> 的 <code>chili.ai.config</code> 里，每次请求随请求体发给本机后端，由后端直接转发给厂商，不写文件、不进数据库。</p>
+      </details>
+      <details>
+        <summary>没有 Key 能不能用？</summary>
+        <p>能。选科问卷、组合推荐、专业推荐、院校优势都是本地规则算的，AI 只是把结果说得更细。没配置 Key 时页面会提示「AI 未配置」，但流程照样走完。</p>
+      </details>
+      <details>
+        <summary>提示 401 或「Key 无效」怎么办？</summary>
+        <p>先确认 Key 没多复制空格、没过期；再确认厂商选对了（DeepSeek 的 Key 不能填到通义）。换一家试也能快速判断是 Key 的问题还是网络的问题。</p>
+      </details>
+      <details>
+        <summary>提示 429 或「请求太频繁」怎么办？</summary>
+        <p>免费额度通常有每分钟调用上限。等一分钟再试；连续触发会被临时限流。</p>
+      </details>
+      <details>
+        <summary>为什么测试连接要求先登录？</summary>
+        <p>AI 接口要登录才能调，避免别人拿你的机器当免费代理。注册一个账号就行，不需要付费。</p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="hp-footer">
+    <div class="hp-wrap hp-footer-grid">
+      <div class="hp-footer-brand">
+        <p class="hp-footer-lead"><strong>赤鲤</strong> · 高一选科规划</p>
+        <p class="hp-footer-status">
+          <span class="hp-status-dot" aria-hidden="true"></span>
+          <span>Key 只存本机浏览器 · 规则引擎离线可用</span>
+        </p>
+      </div>
+
+      <nav class="hp-footer-col" aria-label="产品">
+        <h2>产品</h2>
+        <a href="./wizard.html">选科测评</a>
+        <a href="./major.html">专业库</a>
+        <a href="./mooc.html">专业先导课</a>
+        <a href="./ai-setup.html" aria-current="page">AI 接入指南</a>
+      </nav>
+
+      <nav class="hp-footer-col" aria-label="高三工具">
+        <h2>高三工具</h2>
+        <a href="./predict.html">录取预测</a>
+        <a href="./curve.html">一分一段</a>
+        <a href="./plan.html">冲稳保方案</a>
+        <a href="./compare.html">专业对比</a>
+      </nav>
+
+      <nav class="hp-footer-col" aria-label="关于">
+        <h2>关于</h2>
+        <a href="./about.html">关于赤鲤</a>
+        <a href="./privacy.html">隐私政策</a>
+        <a href="./terms.html">用户协议</a>
+        <a href="./help.html">帮助中心</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script type="module" src="./js/ai-setup.js"></script>
+</body>
+</html>

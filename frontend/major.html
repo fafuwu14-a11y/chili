@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>专业库 · 赤鲤</title>
+  <meta name="description" content="821 个本科专业按学科门类和专业类归好档：每个专业要什么选科、在哪些省招、录取位次落在哪一段、哪些学校更强。">
+  <meta name="theme-color" content="#E60012">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E60012'/%3E%3Cpath d='M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="./css/portal.css">
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/colleges-drawer.css">
+  <link rel="stylesheet" href="./css/major-page.css">
+</head>
+<body class="hp-page mp-page">
+  <header class="hp-header mp-header">
+    <div class="hp-header-inner">
+      <a class="hp-brand" href="./index.html" aria-label="赤鲤首页">
+        <span class="hp-brand-mark" aria-hidden="true">鲤</span>
+        <span class="hp-brand-text"><strong>赤鲤</strong><em>专业库</em></span>
+      </a>
+
+      <button class="hp-burger" type="button" id="mp-burger" aria-label="打开导航"
+        aria-expanded="false" aria-controls="mp-nav">
+        <span class="hp-burger-bar"></span><span class="hp-burger-bar"></span><span class="hp-burger-bar"></span>
+      </button>
+
+      <nav class="hp-nav" id="mp-nav" aria-label="主导航">
+        <a class="hp-nav-link" href="./index.html">首页</a>
+        <a class="hp-nav-link" href="./wizard.html">选科测评</a>
+        <a class="hp-nav-link is-active" href="./major.html" aria-current="page">专业库</a>
+        <a class="hp-nav-link" href="./ai-coach.html">AI 顾问</a>
+        <a class="hp-nav-link" href="./growth.html">培优扶弱</a>
+      </nav>
+
+      <div class="hp-actions">
+        <a class="hp-btn hp-btn--ghost hp-btn--sm" href="./ai-setup.html">AI 设置</a>
+        <span class="mp-login-slot" data-login-slot></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="mp-main" id="mp-main">
+    <div class="mp-wrap">
+      <header class="mp-hero">
+        <p class="mp-eyebrow"><i></i>专业库 · 821 个本科专业</p>
+        <h1>选专业之前，<br><em>先看清它要什么。</em></h1>
+        <p class="mp-hero-sub">
+          每个专业都标了三件事：<strong>要哪几门选科</strong>、<strong>在哪些省招多少人</strong>、
+          <strong>哪些学校的录取位次最高</strong>。名字好看不算数——先看它四年教你什么、毕业去哪里、代价是什么。
+        </p>
+        <ul class="mp-stats">
+          <li><b>821</b><span>个本科专业</span></li>
+          <li><b>92</b><span>个专业类</span></li>
+          <li><b>4</b><span>省按专业公布投档</span></li>
+          <li><b>8</b><span>个省的投档数据</span></li>
+        </ul>
+      </header>
+
+      <section class="mp-panel" aria-labelledby="mp-search-title">
+        <div class="mp-panel-head">
+          <h2 id="mp-search-title">找专业</h2>
+          <p>按门类一层层点，或直接搜名字。招生规模与中位分来自浙江、山东、河北、辽宁四省 2026 年投档表。</p>
+        </div>
+
+        <form class="major-search" id="major-search" novalidate>
+          <div class="input-wrap">
+            <input id="major-q" name="q" type="search" placeholder="例如：计算机、临床医学、会计"
+              autocomplete="off" aria-label="搜索专业">
+          </div>
+          <button class="btn-primary" type="submit" id="major-submit">
+            <span>搜索</span>
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+              <path d="M16.5 16.5L21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </form>
+
+        <div class="major-layout">
+          <aside class="major-tree" id="major-tree" aria-label="学科门类与专业类">
+            <div class="skeleton skeleton--line"></div>
+          </aside>
+
+          <div class="major-main">
+            <p class="major-list-head" id="major-list-head">全部专业</p>
+            <div class="major-list" id="major-list" aria-live="polite"></div>
+            <p class="major-empty" id="major-empty" hidden>没找到匹配的专业，换个关键词或门类试试。</p>
+          </div>
+
+          <aside class="major-detail" id="major-detail" hidden aria-live="polite" aria-label="专业详情"></aside>
+        </div>
+      </section>
+
+      <section class="mp-notes" aria-label="数据说明">
+        <h2>这些数字是怎么来的</h2>
+        <div class="mp-note-grid">
+          <article>
+            <h3>为什么只有四个省</h3>
+            <p>这四省按「专业」公布投档线，能直接看到某校某专业录到多少分。其余省份按「院校专业组」公布，只有组号没有专业名，所以分省数据只看这四省。</p>
+          </article>
+          <article>
+            <h3>中位分不是录取线</h3>
+            <p>列表里的分数是当年录取最低分的中位数，用来看这个专业大致落在什么分数段，不构成录取承诺。</p>
+          </article>
+          <article>
+            <h3>院校位次怎么排</h3>
+            <p>「哪些学校这个专业强」按最近一年录取位次升序：位次越靠前，说明这所学校在这个专业上越难考，不代表学科评估更强。</p>
+          </article>
+          <article>
+            <h3>跨年数据有几处缺口</h3>
+            <p>目前只有辽宁能跨 2024 与 2026 对比（缺 2025），其余三省只有 2026 一年。有几年算几年，不补造。</p>
+          </article>
+        </div>
+      </section>
+
+      <p class="mp-foot-note">
+        选科要求按专业类给出通用口径，具体院校、具体专业可能更严——以你省考试院当年公布的《选考科目要求》为准。
+      </p>
+    </div>
+  </main>
+
+  <script type="module" src="./js/major.js"></script>
+</body>
+</html>

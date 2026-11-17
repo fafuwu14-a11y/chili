@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>赤鲤 · 专业对比</title>
+  <meta name="description" content="把 2–4 个专业放在一张六维雷达图上对比：课业强度、就业面、起薪、考研必要、考公适配、创业友好，再逐项看学制、就业率、起薪与对口职业。" />
+  <meta name="theme-color" content="#E60012" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E60012'/%3E%3Cpath d='M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body class="page-compare">
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient-glow ambient-glow--a"></span>
+    <span class="ambient-glow ambient-glow--b"></span>
+    <span class="ambient-glyph">比</span>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="赤鲤首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+      </span>
+      <span class="brand-text">
+        <strong>赤鲤</strong>
+        <em>高考志愿辅助 &amp; 大一成长</em>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="主导航">
+      <a class="nav-link" href="./index.html">首页</a>
+      <a class="nav-link" href="./predict.html">录取预测</a>
+      <a class="nav-link" href="./quiz.html">专业匹配</a>
+      <a class="nav-link" href="./curve.html">一分一段</a>
+      <div class="nav-more">
+        <button class="nav-link nav-more-btn is-active" type="button" aria-expanded="false" aria-haspopup="true" aria-current="page">更多<i class="caret" aria-hidden="true">▾</i></button>
+        <div class="nav-more-pop" hidden>
+          <a class="nav-pop-link" href="./plan.html">冲稳保方案</a>
+          <a class="nav-pop-link" href="./mooc.html">专业先导课</a>
+          <a class="nav-pop-link" href="./major.html">专业详情</a>
+          <a class="nav-pop-link is-active" href="./compare.html">专业对比</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="topbar-side">
+      <a class="data-pill" href="./about.html#data"><span class="dot"></span>数据更新至 2026-07</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero hero--compact">
+      <p class="eyebrow"><i></i>FEATURE 06 · 专业对比</p>
+      <h1>几个专业放一起，<br /><em>差别就藏不住了</em></h1>
+      <p class="hero-sub">
+        选 2–4 个专业，按课业强度、就业面、起薪、考研必要、考公适配、创业友好
+        六个维度叠在一张雷达图上。分数是判断不是统计，图下面逐项列出了依据。
+      </p>
+    </section>
+
+    <section class="panel compare-panel">
+      <div class="panel-head">
+        <h2>选专业</h2>
+        <p>输入名字搜索，最多选 4 个。默认先放了三个示例，删掉再换。</p>
+      </div>
+
+      <div class="compare-picker">
+        <div class="input-wrap">
+          <input id="compare-q" name="q" type="search" placeholder="例如：软件工程、法学、会计学" autocomplete="off" aria-label="搜索要对比的专业" />
+        </div>
+        <ul class="compare-suggest" id="compare-suggest" hidden></ul>
+        <div class="compare-chosen" id="compare-chosen"></div>
+      </div>
+    </section>
+
+    <section class="panel compare-chart-panel">
+      <div class="panel-head">
+        <h2>六维对比</h2>
+        <p>越靠外表示这一维越强（1–5 分）。五个值相同的专业会完全重合，这是正常的。</p>
+      </div>
+
+      <div class="compare-stage">
+        <div class="compare-radar" id="compare-radar">
+          <div class="skeleton"></div>
+        </div>
+        <ul class="compare-legend" id="compare-legend"></ul>
+      </div>
+    </section>
+
+    <section class="panel compare-detail-panel">
+      <div class="panel-head">
+        <h2>逐项看</h2>
+        <p>就业率与起薪都是区间，来源写在页面底部的说明里。</p>
+      </div>
+      <div class="compare-table-wrap" id="compare-table"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="赤鲤首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+          </span>
+          <span class="brand-text">
+            <strong>赤鲤</strong>
+            <em>高考志愿辅助 &amp; 大一成长</em>
+          </span>
+        </a>
+        <p class="footer-lead">把分数、位次和兴趣，变成一张能照着填的志愿表。</p>
+        <p class="footer-meta">数据更新至 2026 年 7 月<br />江苏 · 广东 · 湖北 · 山西 · 辽宁 · 浙江 · 山东 · 河北</p>
+      </div>
+      <nav class="footer-col" aria-label="产品">
+        <h2>产品</h2>
+        <a href="./index.html">录取概率预测</a>
+        <a href="./quiz.html">专业匹配测评</a>
+        <a href="./curve.html">一分一段查询</a>
+        <a href="./plan.html">冲稳保方案</a>
+        <a href="./mooc.html">专业先导课</a>
+        <a href="./major.html">专业详情</a>
+        <a href="./compare.html">专业对比</a>
+      </nav>
+      <nav class="footer-col" aria-label="数据">
+        <h2>数据</h2>
+        <a href="./about.html#data">数据来源</a>
+        <a href="./about.html#method">计算方法</a>
+        <a href="./about.html#accuracy">回测与误差</a>
+        <a href="./help.html">帮助中心</a>
+      </nav>
+      <nav class="footer-col" aria-label="关于">
+        <h2>关于</h2>
+        <a href="./about.html">关于赤鲤</a>
+        <a href="./privacy.html">隐私政策</a>
+        <a href="./terms.html">用户协议</a>
+        <a href="./help.html#contact">联系我们</a>
+      </nav>
+    </div>
+    <div class="footer-base">
+      <p>© 2026 赤鲤 · 结果由统计模型估算，仅供参考，不构成录取承诺。</p>
+      <p><a href="./about.html#filing">备案信息</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript><p style="padding:24px;text-align:center">这个页面需要启用 JavaScript。</p></noscript>
+  <script type="module" src="./js/compare.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>培优扶弱 · 赤鲤</title>
+  <meta name="description" content="按测评里的学科强弱，给优势科目四级路径、给弱势科目失分诊断与补强动作。">
+  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="./css/portal.css">
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/growth.css">
+</head>
+<body class="hp-page gr-page">
+  <a class="gr-skip" href="#gr-main">跳到主要内容</a>
+
+  <header class="hp-header gr-header">
+    <div class="hp-header-inner">
+      <a class="hp-brand" href="./index.html" aria-label="赤鲤首页">
+        <span class="hp-brand-mark" aria-hidden="true">鲤</span>
+        <span class="hp-brand-text"><strong>赤鲤</strong><em>培优扶弱</em></span>
+      </a>
+
+      <button class="hp-burger" type="button" id="gr-burger" aria-label="打开导航"
+        aria-expanded="false" aria-controls="gr-nav">
+        <span class="hp-burger-bar"></span><span class="hp-burger-bar"></span><span class="hp-burger-bar"></span>
+      </button>
+
+      <nav class="hp-nav" id="gr-nav" aria-label="主导航">
+        <a class="hp-nav-link" href="./index.html">首页</a>
+        <a class="hp-nav-link" href="./wizard.html">选科测评</a>
+        <a class="hp-nav-link" href="./major.html">专业库</a>
+        <a class="hp-nav-link" href="./ai-coach.html">AI 顾问</a>
+        <a class="hp-nav-link is-active" href="./growth.html" aria-current="page">培优扶弱</a>
+      </nav>
+
+      <div class="hp-actions">
+        <button class="hp-btn hp-btn--ghost hp-btn--sm" type="button" id="gr-ai-open">AI 设置</button>
+        <span class="gr-login-slot" data-login-slot></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="gr-main" id="gr-main" tabindex="-1">
+    <header class="gr-head">
+      <p class="gr-eyebrow"><span>06</span> 培优扶弱</p>
+      <h1>优势往上走，短板先止损</h1>
+      <p class="gr-lead">
+        这份方案只用你测评里的学科强弱，不猜分数、不排名次。优势科目给一条能往上走的路径，弱势科目先找失分类型——同样的时间，补短板的回报通常更高。
+      </p>
+      <div class="gr-head-tags">
+        <span class="gr-tag" id="gr-source-tag">正在读取测评结果…</span>
+        <a class="gr-link" href="./wizard.html">重新测评 →</a>
+      </div>
+    </header>
+
+    <section class="gr-block" aria-labelledby="gr-chart-title">
+      <div class="gr-block-head">
+        <h2 id="gr-chart-title">七门选考科目的相对位置</h2>
+        <p class="gr-block-note">分数来自问卷里的自评与情境题，是“你现在更愿意投入哪门”，不是考试成绩。</p>
+      </div>
+      <div class="gr-chart" id="gr-chart"></div>
+    </section>
+
+    <section class="gr-block" aria-labelledby="gr-strong-title">
+      <div class="gr-block-head">
+        <h2 id="gr-strong-title">优势科目：往上走的四级路径</h2>
+        <p class="gr-block-note">按“课内拔高 → 竞赛入门 → 强基计划 → 大学先修”逐级走，不要跳级。</p>
+      </div>
+      <div class="gr-cards" id="gr-strong"></div>
+    </section>
+
+    <section class="gr-block" aria-labelledby="gr-weak-title">
+      <div class="gr-block-head">
+        <h2 id="gr-weak-title">待补科目：先定位，再补</h2>
+        <p class="gr-block-note">先做一套真题把错题归到知识点，再回课本补那一段；不要从头重学。</p>
+      </div>
+      <div class="gr-cards" id="gr-weak"></div>
+    </section>
+
+    <section class="gr-block" aria-labelledby="gr-mid-title">
+      <div class="gr-block-head">
+        <h2 id="gr-mid-title">其他科目：保持节奏</h2>
+        <p class="gr-block-note">不投入额外时间，跟上课堂进度即可。</p>
+      </div>
+      <ul class="gr-mid-list" id="gr-mid"></ul>
+    </section>
+
+    <section class="gr-block gr-note" aria-labelledby="gr-limit-title">
+      <h2 id="gr-limit-title">这份方案的边界</h2>
+      <ul class="gr-limit-list">
+        <li>只给学习路径与失分类型，<b>不给具体题目</b>——知识点题库与真题组卷还在建设，上线前不会用生成的题充数。</li>
+        <li>没有你的平时成绩，强弱判断来自问卷自评；如果你手头有最近两次月考的单科排名，以排名为准。</li>
+        <li>“四级路径”是通用路线，竞赛与强基是否值得投入，还要看你们学校的教练与往年名额。</li>
+      </ul>
+      <p class="gr-cta-row">
+        <a class="hp-btn hp-btn--primary" href="./wizard.html">先做一次测评 →</a>
+        <a class="hp-btn hp-btn--ghost" href="./major.html">去看专业库</a>
+      </p>
+    </section>
+  </main>
+
+  <footer class="hp-footer">
+    <div class="hp-wrap">
+      <div class="hp-footer-grid">
+        <div class="hp-footer-brand">
+          <span class="hp-brand-mark" aria-hidden="true">鲤</span>
+          <p class="hp-footer-lead">赤鲤 · 把高一的选择讲清楚</p>
+        </div>
+        <div class="hp-footer-col">
+          <h3>产品</h3>
+          <a href="./wizard.html">选科测评</a>
+          <a href="./major.html">专业库</a>
+          <a href="./mooc.html">先导课</a>
+        </div>
+        <div class="hp-footer-col">
+          <h3>关于</h3>
+          <a href="./about.html">项目说明</a>
+          <a href="./help.html">帮助中心</a>
+          <a href="./privacy.html">隐私政策</a>
+        </div>
+      </div>
+      <p class="gr-foot-note">建议只作参考，不替代学校教学安排与老师判断。</p>
+    </div>
+  </footer>
+
+  <div class="gr-toast" id="gr-toast" role="status" aria-live="polite" hidden></div>
+  <script type="module" src="./js/growth.js"></script>
+</body>
+</html>

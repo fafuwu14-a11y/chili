@@ -1,0 +1,257 @@
+/* 专业库 · 新版页面外壳
+   只负责容器、标题区和说明区；专业树 / 列表 / 详情的组件样式继续用 app.css 的 .major-*。 */
+
+.mp-page {
+  background:
+    radial-gradient(1100px 560px at 10% -10%, rgba(230, 0, 18, 0.06), transparent 60%),
+    radial-gradient(880px 480px at 94% 2%, rgba(201, 162, 39, 0.12), transparent 58%),
+    var(--bg);
+  scroll-padding-top: 88px;
+}
+
+.mp-main {
+  padding: 36px 0 72px;
+}
+
+.mp-wrap {
+  width: min(1280px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+/* ---------- 标题区 ---------- */
+
+.mp-hero {
+  max-width: 780px;
+  margin-bottom: 26px;
+}
+
+.mp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--red);
+}
+
+.mp-eyebrow i {
+  width: 26px;
+  height: 2px;
+  background: var(--red);
+  border-radius: 2px;
+}
+
+.mp-hero h1 {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4vw, 48px);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.mp-hero h1 em {
+  font-style: normal;
+  color: var(--red);
+  background: linear-gradient(180deg, transparent 62%, rgba(230, 0, 18, 0.12) 62%);
+}
+
+.mp-hero-sub {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.85;
+  color: var(--ink-2, #6b5c5d);
+}
+
+.mp-hero-sub strong {
+  color: var(--ink);
+}
+
+.mp-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 0;
+  margin: 22px 0 0;
+  padding: 16px 0;
+  list-style: none;
+  border-top: 1px solid var(--line, rgba(36, 26, 27, 0.08));
+  border-bottom: 1px solid var(--line, rgba(36, 26, 27, 0.08));
+}
+
+.mp-stats li {
+  flex: 1 1 130px;
+  padding-left: 18px;
+  border-left: 1px solid var(--line-soft, rgba(36, 26, 27, 0.06));
+}
+
+.mp-stats li:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.mp-stats b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.mp-stats span {
+  font-size: 12.5px;
+  color: var(--ink-2, #6b5c5d);
+}
+
+/* ---------- 主体面板 ---------- */
+
+.mp-panel {
+  padding: 26px 28px 30px;
+  background: var(--card, #fff);
+  border: 1px solid var(--line, rgba(36, 26, 27, 0.08));
+  border-radius: var(--radius-lg, 24px);
+  box-shadow: 0 26px 70px -46px rgba(36, 26, 27, 0.5);
+}
+
+.mp-panel-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.mp-panel-head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.mp-panel-head p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-2, #6b5c5d);
+}
+
+/* 详情面板要让开固定表头 */
+.mp-page .major-detail {
+  top: 88px;
+  max-height: calc(100vh - 108px);
+  overflow-y: auto;
+}
+
+.mp-page .major-list {
+  padding-right: 4px;
+}
+
+/* ---------- 数据说明 ---------- */
+
+.mp-notes {
+  margin-top: 30px;
+}
+
+.mp-notes h2 {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--ink);
+}
+
+.mp-note-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.mp-note-grid article {
+  padding: 18px 20px;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line-soft, rgba(36, 26, 27, 0.07));
+  border-radius: 16px;
+}
+
+.mp-note-grid h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.mp-note-grid p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--ink-2, #6b5c5d);
+}
+
+.mp-foot-note {
+  margin: 20px 0 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: rgba(36, 26, 27, 0.42);
+}
+
+/* ---------- 响应式 ---------- */
+
+@media (max-width: 1180px) {
+  .mp-page .major-layout {
+    grid-template-columns: 182px minmax(0, 1fr);
+  }
+
+  .mp-page .major-detail {
+    position: static;
+    grid-column: 1 / -1;
+    max-height: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .mp-main { padding: 24px 0 48px; }
+
+  .mp-wrap { width: calc(100% - 28px); }
+
+  .mp-panel { padding: 18px 16px 22px; border-radius: 18px; }
+
+  .mp-page .major-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+    margin-top: 16px;
+  }
+
+  /* 手机上门类树横向铺开，别占半屏 */
+  .mp-page .major-tree {
+    display: flex;
+    gap: 6px;
+    padding: 0 0 8px;
+    overflow-x: auto;
+    border-bottom: 1px solid var(--line-soft, rgba(36, 26, 27, 0.06));
+    scrollbar-width: none;
+  }
+
+  .mp-page .major-tree::-webkit-scrollbar { display: none; }
+
+  .mp-page .major-tree .major-cat {
+    flex: none;
+    width: auto;
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .mp-page .major-groups { display: none; }
+
+  .mp-hero h1 { font-size: 27px; }
+
+  .mp-stats li { flex: 1 1 45%; }
+
+  .mp-stats li:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mp-page * { scroll-behavior: auto; }
+}

@@ -1,0 +1,8 @@
+赤鲤 · 源码包校验
+文件：源码_赤鲤_2026-11-17.zip
+文件数：147
+大小：2.10 MB
+SHA256：47ab6ed6fa6ce2a4d9a6b0b09f0163cd469a898cfed0dca437d13d91ed17827a
+生成时间：2026-11-17
+校验方法（Windows PowerShell）：
+  Get-FileHash '源码_赤鲤_2026-11-17.zip' -Algorithm SHA256

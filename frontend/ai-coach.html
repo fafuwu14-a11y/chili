@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>AI 顾问 · 赤鲤</title>
+  <meta name="description" content="让 AI 先问你几个问题：它按兴趣、能力、价值观、现实条件四步引导，聊完给你两三个方向。">
+  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="./css/portal.css">
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/ai-coach.css">
+</head>
+<body class="hp-page ac-page">
+  <header class="hp-header ac-header">
+    <div class="hp-header-inner">
+      <a class="hp-brand" href="./index.html" aria-label="赤鲤首页">
+        <span class="hp-brand-mark" aria-hidden="true">鲤</span>
+        <span class="hp-brand-text"><strong>赤鲤</strong><em>AI 顾问</em></span>
+      </a>
+
+      <button class="hp-burger" type="button" id="ac-burger" aria-label="打开导航"
+        aria-expanded="false" aria-controls="ac-nav">
+        <span class="hp-burger-bar"></span><span class="hp-burger-bar"></span><span class="hp-burger-bar"></span>
+      </button>
+
+      <nav class="hp-nav" id="ac-nav" aria-label="主导航">
+        <a class="hp-nav-link" href="./index.html">首页</a>
+        <a class="hp-nav-link" href="./wizard.html">选科测评</a>
+        <a class="hp-nav-link" href="./major.html">专业库</a>
+        <a class="hp-nav-link is-active" href="./ai-coach.html" aria-current="page">AI 顾问</a>
+        <a class="hp-nav-link" href="./growth.html">培优扶弱</a>
+      </nav>
+
+      <div class="hp-actions">
+        <a class="hp-btn hp-btn--ghost hp-btn--sm" href="./ai-setup.html">AI 设置</a>
+        <span class="ac-login-slot" data-login-slot></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="ac-main" id="ac-main">
+    <div class="ac-wrap">
+      <header class="ac-hero">
+        <p class="ac-eyebrow"><i></i>AI 顾问 · 引导式对话</p>
+        <h1>你不用说「我适合什么」，<br><em>它来问，你来答。</em></h1>
+        <p class="ac-hero-sub">
+          大部分工具是你在搜索框里提问，它给你一堆链接。这里反过来：AI 按<strong>兴趣 → 能力 → 看重什么 → 现实条件</strong>四步往下问，
+          一次只问一个问题，聊六到八轮，最后给你两三个方向和一个理由。
+        </p>
+      </header>
+
+      <div class="ac-layout">
+        <!-- 对话区 -->
+        <section class="ac-chat" aria-label="对话">
+          <div class="ac-chat-head">
+            <div class="ac-chat-title">
+              <span class="ac-dot" aria-hidden="true"></span>
+              <strong>顾问</strong>
+              <span class="ac-status" id="ac-status">准备中</span>
+            </div>
+            <div class="ac-progress" id="ac-progress" aria-hidden="true">
+              <span class="ac-progress-bar" id="ac-progress-bar"></span>
+            </div>
+          </div>
+
+          <div class="ac-stream" id="ac-stream" aria-live="polite" aria-relevant="additions"></div>
+
+          <form class="ac-composer" id="ac-form" novalidate>
+            <label class="ac-sr" for="ac-input">输入你的回答</label>
+            <textarea id="ac-input" rows="1" placeholder="用你自己的话回答，一两句就行"
+              autocomplete="off" maxlength="300"></textarea>
+            <button class="ac-send" type="submit" id="ac-send" aria-label="发送">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M4 12l16-8-6 8 6 8z" fill="currentColor"/>
+              </svg>
+            </button>
+          </form>
+          <p class="ac-hint">Enter 发送，Shift + Enter 换行。说「不想聊了」随时可以停。</p>
+        </section>
+
+        <!-- 侧栏 -->
+        <aside class="ac-side" aria-label="当前进度">
+          <section class="ac-card">
+            <h2>他现在在了解</h2>
+            <ol class="ac-stages" id="ac-stages">
+              <li data-stage="interest"><b>兴趣</b><span>你愿意为什么花时间</span></li>
+              <li data-stage="ability"><b>能力</b><span>你做什么比同学轻松</span></li>
+              <li data-stage="value"><b>看重什么</b><span>稳定 / 收入 / 兴趣 / 研究</span></li>
+              <li data-stage="reality"><b>现实条件</b><span>家里倾向、地域、身体</span></li>
+              <li data-stage="close"><b>收敛</b><span>给方向，不给排名</span></li>
+            </ol>
+          </section>
+
+          <section class="ac-card" id="ac-profile-card" hidden>
+            <h2>你已经有的画像</h2>
+            <p class="ac-profile-note">来自你之前做的 23 题测评，AI 会参考但不被它绑住。</p>
+            <dl class="ac-profile" id="ac-profile"></dl>
+          </section>
+
+          <section class="ac-card ac-card--muted">
+            <h2>为什么是它问你</h2>
+            <p>「你的兴趣是什么」这个问题，15 岁的人答不出来很正常。AI 的做法是把它拆成具体场景：最近为什么事花过两小时、哪门课的作业你愿意多做一点。</p>
+            <p>它不会给你排名、薪资、录取分——那些由规则引擎算，AI 只负责把话问对。</p>
+          </section>
+
+          <section class="ac-card ac-card--warn" id="ac-setup-card" hidden>
+            <h2>还没接上 AI</h2>
+            <p>这个页面需要你自己的模型 Key。选 DeepSeek 最省事，充 10 块能用很久。</p>
+            <a class="hp-btn hp-btn--primary hp-btn--sm" href="./ai-setup.html">去 AI 设置</a>
+          </section>
+        </aside>
+      </div>
+
+      <p class="ac-foot-note">
+        AI 的判断只用于缩小范围，不代替你、家人和老师的决定。它说的话可能不准确，重要结论请对照学校发的选科要求。
+      </p>
+    </div>
+  </main>
+
+  <script type="module" src="./js/ai-coach.js"></script>
+</body>
+</html>

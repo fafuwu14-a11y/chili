@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>选科向导 · 赤鲤</title>
+  <meta name="description" content="高一选科向导：先定省份，再答 23 道题，拿到适合你的三个组合、专业推荐和先导课。">
+  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="./css/portal.css">
+  <link rel="stylesheet" href="./css/wizard.css">
+</head>
+<body class="hp-page wz-page">
+  <a class="wz-skip" href="#wz-main">跳到主要内容</a>
+
+  <header class="hp-header wz-header" id="wz-header">
+    <div class="hp-header-inner">
+      <a class="hp-brand" href="./index.html" aria-label="赤鲤首页">
+        <span class="hp-brand-mark" aria-hidden="true">鲤</span>
+        <span class="hp-brand-text"><strong>赤鲤</strong><em>高一选科向导</em></span>
+      </a>
+
+      <button class="hp-burger" type="button" id="wz-burger" aria-label="打开步骤导航"
+        aria-expanded="false" aria-controls="wz-nav">
+        <span class="hp-burger-bar"></span><span class="hp-burger-bar"></span><span class="hp-burger-bar"></span>
+      </button>
+
+      <nav class="hp-nav wz-stepper" id="wz-nav" aria-label="向导步骤">
+        <button class="hp-nav-link wz-step-link" type="button" data-step="1" aria-current="step">
+          <b>1</b><span>定省份</span>
+        </button>
+        <button class="hp-nav-link wz-step-link" type="button" data-step="2">
+          <b>2</b><span>答问卷</span>
+        </button>
+        <button class="hp-nav-link wz-step-link" type="button" data-step="3">
+          <b>3</b><span>看组合</span>
+        </button>
+        <button class="hp-nav-link wz-step-link" type="button" data-step="4">
+          <b>4</b><span>选专业</span>
+        </button>
+        <button class="hp-nav-link wz-step-link" type="button" data-step="5">
+          <b>5</b><span>验兴趣</span>
+        </button>
+      </nav>
+
+      <div class="hp-actions wz-header-actions">
+        <button class="hp-btn hp-btn--ghost hp-btn--sm" type="button" id="wz-ai-open">AI 设置</button>
+        <span class="wz-login-slot" data-login-slot></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wz-main" id="wz-main" tabindex="-1">
+    <!-- 01 定省份 -->
+    <section class="wz-section" id="wz-step-1" data-step="1" aria-labelledby="wz-step-1-title">
+      <header class="wz-step-head">
+        <p class="wz-eyebrow"><span>01</span> 定省份</p>
+        <h1 id="wz-step-1-title">先确认你在哪儿考试</h1>
+        <p class="wz-lead">选科规则按省份执行。不同省份的组合数量、专业要求都不一样，选错省份，后面的推荐都会偏。</p>
+      </header>
+
+      <div class="wz-province-tools">
+        <label class="wz-search" for="wz-province-search">
+          <span>快速找</span>
+          <input id="wz-province-search" type="search" placeholder="输入省份名，如 江苏"
+            autocomplete="off" enterkeyhint="search">
+        </label>
+        <p class="wz-meta-note" id="wz-province-count">正在加载省份…</p>
+      </div>
+
+      <div class="wz-province-groups" id="wz-province-groups">
+        <p class="wz-loading">正在加载省份…</p>
+      </div>
+      <p class="wz-muted" id="wz-province-empty" hidden>没有找到这个省份，检查一下名字。</p>
+
+      <div class="wz-pick-summary" id="wz-province-summary" hidden>
+        <p class="wz-pick-mode" id="wz-province-mode"></p>
+        <p class="wz-pick-desc" id="wz-province-desc"></p>
+        <p class="wz-pick-combos" id="wz-province-combos"></p>
+      </div>
+
+      <div class="wz-actions">
+        <button class="hp-btn hp-btn--primary wz-btn-lg" type="button" id="wz-start" disabled>开始测评</button>
+        <p class="wz-action-note" id="wz-start-note">先选一个省份</p>
+      </div>
+    </section>
+
+    <!-- 02 答问卷 -->
+    <section class="wz-section" id="wz-step-2" data-step="2" aria-labelledby="wz-step-2-title" hidden>
+      <header class="wz-step-head">
+        <p class="wz-eyebrow"><span>02</span> 答问卷</p>
+        <div class="wz-step-title-row">
+          <div>
+            <h1 id="wz-step-2-title">23 道题，凭第一反应答</h1>
+            <p class="wz-lead">没有标准答案。越接近平时的你，推荐越准；往「应该怎样」上答，结果只会像一份标准简历。</p>
+          </div>
+          <p class="wz-quiz-clock">约 6 分钟</p>
+        </div>
+      </header>
+
+      <div class="wz-quiz-shell">
+        <div class="wz-loading" id="wz-quiz-loading">正在加载题库…</div>
+
+        <div id="wz-quiz-body" hidden>
+          <div class="wz-quiz-top">
+            <div class="wz-progress" id="wz-progress" role="progressbar"
+              aria-label="答题进度" aria-valuemin="1" aria-valuemax="23" aria-valuenow="1">
+              <span class="wz-progress-bar" id="wz-progress-bar"></span>
+            </div>
+            <div class="wz-quiz-meta">
+              <span id="wz-quiz-count">第 1 / 23 题</span>
+              <span id="wz-quiz-topic">兴趣</span>
+            </div>
+          </div>
+
+          <div class="wz-question" id="wz-question"></div>
+
+          <div class="wz-quiz-actions">
+            <button class="hp-btn hp-btn--ghost" type="button" id="wz-quiz-prev">上一题</button>
+            <div class="wz-quiz-next-wrap">
+              <span class="wz-key-hint">键盘 1–5 也能选</span>
+              <button class="hp-btn hp-btn--primary" type="button" id="wz-quiz-next">下一题</button>
+            </div>
+          </div>
+          <p class="wz-quiz-save" id="wz-quiz-save">答案只存在当前浏览器，刷新不会丢。</p>
+        </div>
+
+        <div class="wz-empty" id="wz-quiz-error" hidden>
+          <h2>题库加载失败</h2>
+          <p>可能是网络中断，或后端还没把题目接口接上。刷新页面后再试一次。</p>
+          <button class="hp-btn hp-btn--primary" type="button" id="wz-quiz-retry">重新加载</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 组合推荐 -->
+    <section class="wz-section" id="wz-step-3" data-step="3" aria-labelledby="wz-step-3-title" hidden>
+      <header class="wz-step-head">
+        <p class="wz-eyebrow"><span>03</span> 看组合</p>
+        <h1 id="wz-step-3-title">三个值得认真考虑的组合</h1>
+        <p class="wz-lead">分数来自你的兴趣、能力倾向和专业覆盖，不是录取概率。先看「为什么」，再看「代价」。</p>
+        <p class="wz-report-meta" id="wz-report-meta"></p>
+      </header>
+
+      <div class="wz-inline-status" id="wz-combo-status" role="status"></div>
+      <div class="wz-combo-grid" id="wz-combo-grid"></div>
+
+      <div class="wz-actions wz-actions--split">
+        <button class="hp-btn hp-btn--ghost" type="button" id="wz-combo-more">换一批</button>
+        <button class="hp-btn hp-btn--primary" type="button" id="wz-to-majors">看这些组合能报什么专业</button>
+      </div>
+
+      <aside class="wz-callout">
+        <h2>覆盖率不是越高越好</h2>
+        <p>覆盖率高的组合，通常把物理、化学这类「通行证」都带上了，代价是学习强度更大，也可能离你真正想读的方向更远。</p>
+        <p>真正要避免的，是「分数看着高，但想读的专业一个都报不了」。所以下面第 4 步会逐个专业标出：你推荐的组合到底能不能报。</p>
+      </aside>
+    </section>
+
+    <!-- 04 专业推荐 -->
+    <section class="wz-section" id="wz-step-4" data-step="4" aria-labelledby="wz-step-4-title" hidden>
+      <header class="wz-step-head">
+        <p class="wz-eyebrow"><span>04</span> 选专业</p>
+        <h1 id="wz-step-4-title">这些专业，和你现在的兴趣对得上</h1>
+        <p class="wz-lead">别只看专业名字。先看它属于哪个专业类、对应哪类兴趣，再点开院校看看这个专业在哪些学校更值得读。</p>
+        <p class="wz-report-meta" id="wz-major-meta"></p>
+      </header>
+
+      <div class="wz-major-tools">
+        <label class="wz-check" for="wz-major-eligible">
+          <input type="checkbox" id="wz-major-eligible">
+          <span>只看推荐组合能报的</span>
+        </label>
+        <span class="wz-major-count" id="wz-major-count"></span>
+      </div>
+
+      <div class="wz-inline-status" id="wz-major-status" role="status"></div>
+      <div class="wz-major-grid" id="wz-major-grid"></div>
+
+      <p class="wz-disclaimer">
+        专业类的选科要求是通用口径；具体院校、具体专业可能更严，以你省考试院当年公布的《选考科目要求》为准。
+      </p>
+    </section>
+
+    <!-- 05 验兴趣 -->
+    <section class="wz-section" id="wz-step-5" data-step="5" aria-labelledby="wz-step-5-title" hidden>
+      <header class="wz-step-head">
+        <p class="wz-eyebrow"><span>05</span> 验兴趣</p>
+        <h1 id="wz-step-5-title">用一门课，验证一下「喜欢」</h1>
+        <p class="wz-lead">推荐只是方向。先看这个专业到底学什么，再回答三个问题：你愿不愿意为它付出一个周末。</p>
+      </header>
+
+      <div class="wz-interest-bar">
+        <label for="wz-interest-select">选一个刚才推荐的专业</label>
+        <div class="wz-select-wrap">
+          <select id="wz-interest-select"></select>
+        </div>
+        <a class="wz-text-link" id="wz-interest-detail" href="./major.html">看专业详情 ↗</a>
+      </div>
+
+      <div class="wz-step5-grid">
+        <section class="wz-panel wz-mooc-panel" aria-labelledby="wz-mooc-title">
+          <header class="wz-panel-head">
+            <div>
+              <p class="wz-kicker">先导课</p>
+              <h2 id="wz-mooc-title">花几个小时，看看它到底学什么</h2>
+            </div>
+            <a class="wz-text-link" id="wz-mooc-all" href="./mooc.html">全部课程 ↗</a>
+          </header>
+          <div class="wz-course-list" id="wz-mooc-list">
+            <p class="wz-muted">选一个专业后加载课程。</p>
+          </div>
+          <p class="wz-panel-note" id="wz-mooc-note"></p>
+        </section>
+
+        <section class="wz-panel wz-ai-panel" aria-labelledby="wz-ai-title">
+          <header class="wz-panel-head">
+            <div>
+              <p class="wz-kicker">AI 视角</p>
+              <h2 id="wz-ai-title">真实的一天，和三个灵魂拷问</h2>
+            </div>
+            <button class="wz-text-btn" type="button" id="wz-ai-generate">用 AI 重写</button>
+          </header>
+          <div class="wz-ai-body" id="wz-ai-body"></div>
+          <p class="wz-panel-note" id="wz-ai-note"></p>
+        </section>
+      </div>
+
+      <section class="wz-panel wz-retest-panel" aria-labelledby="wz-retest-title">
+        <header class="wz-panel-head">
+          <div>
+            <p class="wz-kicker">二次检验</p>
+            <h2 id="wz-retest-title">三个问题，别选「应该」，选「愿意」</h2>
+          </div>
+        </header>
+        <div class="wz-retest-list" id="wz-retest-list"></div>
+        <div class="wz-verdict" id="wz-verdict" role="status" hidden></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="wz-footer">
+    <p>赤鲤 · 高一选科向导</p>
+    <p>推荐由规则引擎生成，用于缩小选择范围，不代替你和家人、老师的判断。数据与选科要求以本省考试院公布为准。</p>
+  </footer>
+
+  <!-- 院校优势抽屉 -->
+  <div class="wz-drawer-layer" id="wz-drawer" hidden>
+    <div class="wz-scrim" data-drawer-close></div>
+    <aside class="wz-drawer" role="dialog" aria-modal="true" aria-labelledby="wz-drawer-title" tabindex="-1">
+      <header class="wz-drawer-head">
+        <div>
+          <p class="wz-kicker">院校优势</p>
+          <h2 id="wz-drawer-title">院校列表</h2>
+          <p class="wz-drawer-sub" id="wz-drawer-sub"></p>
+        </div>
+        <button class="wz-icon-btn" type="button" id="wz-drawer-close" aria-label="关闭院校列表">×</button>
+      </header>
+
+      <div class="wz-drawer-tools">
+        <label for="wz-drawer-province">省份
+          <select id="wz-drawer-province"></select>
+        </label>
+        <label for="wz-drawer-track">科类
+          <select id="wz-drawer-track"></select>
+        </label>
+      </div>
+
+      <p class="wz-drawer-note" id="wz-drawer-note"></p>
+      <div class="wz-drawer-body" id="wz-drawer-body"></div>
+    </aside>
+  </div>
+
+  <!-- AI 设置 -->
+  <div class="wz-modal-layer" id="wz-ai-modal" hidden>
+    <div class="wz-modal-scrim" data-ai-close></div>
+    <section class="wz-modal" role="dialog" aria-modal="true"
+      aria-labelledby="wz-ai-modal-title" aria-describedby="wz-ai-modal-desc">
+      <header class="wz-modal-head">
+        <div>
+          <p class="wz-kicker">本机配置</p>
+          <h2 id="wz-ai-modal-title">AI 设置</h2>
+        </div>
+        <button class="wz-icon-btn" type="button" id="wz-ai-close" aria-label="关闭 AI 设置">×</button>
+      </header>
+
+      <p class="wz-modal-desc" id="wz-ai-modal-desc">
+        用你自己的模型 Key。Key 只存在这台电脑的浏览器里，请求时临时交给后端转发，不写进数据库。
+      </p>
+
+      <div class="wz-field">
+        <label for="wz-ai-provider">厂商</label>
+        <select id="wz-ai-provider"></select>
+        <p class="wz-field-hint" id="wz-ai-provider-hint"></p>
+      </div>
+
+      <div class="wz-field">
+        <label for="wz-ai-key">API Key</label>
+        <input id="wz-ai-key" type="password" autocomplete="off" spellcheck="false"
+          placeholder="粘贴厂商控制台里的 Key">
+        <p class="wz-field-hint">仅存在本机浏览器（localStorage），不上传。当前：<code id="wz-ai-masked">未配置</code></p>
+      </div>
+
+      <div class="wz-field">
+        <label for="wz-ai-model">模型</label>
+        <input id="wz-ai-model" type="text" autocomplete="off" spellcheck="false" placeholder="deepseek-chat">
+      </div>
+
+      <div class="wz-modal-actions">
+        <button class="hp-btn hp-btn--ghost" type="button" id="wz-ai-test">测试连接</button>
+        <button class="hp-btn hp-btn--primary" type="button" id="wz-ai-save">保存</button>
+      </div>
+
+      <p class="wz-status" id="wz-ai-status" role="status" aria-live="polite"></p>
+
+      <div class="wz-modal-foot">
+        <button class="wz-text-btn" type="button" id="wz-ai-clear">清除本机配置</button>
+        <a class="wz-text-link" id="wz-ai-help" href="#" target="_blank" rel="noopener noreferrer" hidden>去厂商控制台拿 Key ↗</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="./js/wizard.js"></script>
+</body>
+</html>

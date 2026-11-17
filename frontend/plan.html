@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>赤鲤 · 冲稳保志愿方案</title>
+  <meta name="description" content="按冲、稳、保三档自动排出一张可以照着填的志愿表，支持打印与导出 PDF。" />
+  <meta name="theme-color" content="#E60012" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23E60012'/%3E%3Cpath d='M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./css/app.css" />
+</head>
+<body class="page-plan">
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient-glow ambient-glow--a"></span>
+    <span class="ambient-glow ambient-glow--b"></span>
+    <span class="ambient-glyph">愿</span>
+  </div>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="赤鲤首页">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+      </span>
+      <span class="brand-text">
+        <strong>赤鲤</strong>
+        <em>高考志愿辅助 &amp; 大一成长</em>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="主导航">
+      <a class="nav-link" href="./index.html">首页</a>
+      <a class="nav-link" href="./predict.html">录取预测</a>
+      <a class="nav-link" href="./quiz.html">专业匹配</a>
+      <a class="nav-link" href="./curve.html">一分一段</a>
+      <div class="nav-more">
+        <button class="nav-link nav-more-btn is-active" type="button" aria-expanded="false" aria-haspopup="true" aria-current="page">更多<i class="caret" aria-hidden="true">▾</i></button>
+        <div class="nav-more-pop" hidden>
+          <a class="nav-pop-link" href="./plan.html">冲稳保方案</a>
+          <a class="nav-pop-link" href="./mooc.html">专业先导课</a>
+          <a class="nav-pop-link" href="./major.html">专业详情</a>
+          <a class="nav-pop-link" href="./compare.html">专业对比</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="topbar-side">
+      <a class="data-pill" href="./about.html#data"><span class="dot"></span>数据更新至 2026-07</a>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero hero--compact">
+      <p class="eyebrow"><i></i>FEATURE 03 · 冲稳保志愿方案生成</p>
+      <h1>把纠结，排成<br /><em>一张能照着填的表</em></h1>
+      <p class="hero-sub">
+        从你的位次出发，在全部招生单位里挑出最值得填的几十个，
+        按<strong>冲、稳、保</strong>三档排好顺序，并给出每一档的填报建议。
+      </p>
+    </section>
+
+    <section class="panel" id="plan-form-panel">
+      <div class="panel-head">
+        <h2>输入成绩</h2>
+        <p>分数和位次至少填一个，其余交给模型。</p>
+      </div>
+
+      <form class="form" id="plan-form" novalidate>
+        <div class="field">
+          <label for="province">省份</label>
+          <div class="select-wrap"><select id="province" name="province" required></select></div>
+        </div>
+        <div class="field">
+          <label for="track">科类</label>
+          <div class="select-wrap"><select id="track" name="track" required></select></div>
+        </div>
+        <div class="field">
+          <label for="score">高考分数</label>
+          <div class="input-wrap">
+            <input id="score" name="score" type="number" inputmode="numeric" min="0" max="750" placeholder="例如 620" autocomplete="off" />
+            <span class="unit">分</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="rank">全省位次 <span class="optional">选填</span></label>
+          <div class="input-wrap">
+            <input id="rank" name="rank" type="number" inputmode="numeric" min="1" placeholder="不知道就留空" autocomplete="off" />
+            <span class="unit">名</span>
+          </div>
+        </div>
+        <button class="btn-primary" type="submit" id="generate-btn">
+          <span>生成方案</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </form>
+
+      <div class="slot-config">
+        <span class="slot-config-label">各档数量</span>
+        <label>冲 <input id="chong" type="number" min="0" max="45" value="4" inputmode="numeric" /></label>
+        <label>稳 <input id="wen" type="number" min="0" max="45" value="8" inputmode="numeric" /></label>
+        <label>保 <input id="bao" type="number" min="0" max="45" value="6" inputmode="numeric" /></label>
+        <button type="button" class="btn-ghost btn-sm" id="fill-all">按 2:4:4 填满</button>
+        <span class="slot-config-total">
+          共 <b id="slot-total">18</b> <span id="slot-unit">个专业组</span>
+          <span class="slot-config-max">/ 本省可填 <b id="slots-max">45</b> 个</span>
+          <span class="slot-ratio" id="slot-ratio" hidden></span>
+        </span>
+      </div>
+
+      <div class="plan-mode">
+        <span class="plan-mode-label" id="plan-mode-label">排法</span>
+        <div class="mode-switch" id="plan-mode" role="radiogroup" aria-labelledby="plan-mode-label">
+          <button type="button" class="mode-btn is-active" data-mode="auto" role="radio" aria-checked="true">智能排</button>
+          <button type="button" class="mode-btn" data-mode="school" role="radio" aria-checked="false">按学校</button>
+          <button type="button" class="mode-btn" data-mode="major" role="radio" aria-checked="false">按专业</button>
+        </div>
+        <span class="plan-mode-hint" id="plan-mode-hint">同一所学校适量重复，兼顾覆盖面与被录取可能。</span>
+      </div>
+    </section>
+
+    <section class="plan-result" id="plan-result" hidden aria-live="polite">
+      <div class="print-head">
+        <strong>赤鲤 · 冲稳保志愿方案</strong>
+        <span id="print-meta"></span>
+      </div>
+
+      <div class="plan-head">
+        <div>
+          <h2>志愿方案</h2>
+          <p class="plan-meta" id="plan-meta"></p>
+        </div>
+        <div class="plan-actions">
+          <button type="button" class="btn-ghost" id="copy-plan">复制文本</button>
+          <button type="button" class="btn-primary btn-print" id="print-plan">
+            <span>打印 / 导出 PDF</span>
+            <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M7 9V4h10v5M7 18H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M7 14h10v7H7z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <p class="plan-note" id="plan-note"></p>
+
+      <div id="plan-table"></div>
+
+      <p class="plan-advice" id="plan-advice"></p>
+
+      <p class="print-foot">
+        本表由「赤鲤」按位次等值法估算生成，结果仅供填报参考，不构成录取承诺；
+        正式填报请以省教育考试院公布的计划与数据为准。
+      </p>
+    </section>
+
+    <section class="skeleton-wrap" id="loading" hidden aria-hidden="true">
+      <div class="skeleton"></div>
+      <div class="skeleton"></div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="赤鲤首页">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" width="22" height="22"><path d="M20 40c6-14 18-18 24-14-2 6-8 12-14 14 6 2 12 0 16-4-2 8-10 12-18 10-4-1-7-3-8-6z" fill="currentColor"/></svg>
+          </span>
+          <span class="brand-text">
+            <strong>赤鲤</strong>
+            <em>高考志愿辅助 &amp; 大一成长</em>
+          </span>
+        </a>
+        <p class="footer-lead">把分数、位次和兴趣，变成一张能照着填的志愿表。</p>
+        <p class="footer-meta">数据更新至 2026 年 7 月<br />江苏 · 广东 · 湖北 · 山西 · 辽宁 · 浙江 · 山东 · 河北</p>
+      </div>
+      <nav class="footer-col" aria-label="产品">
+        <h2>产品</h2>
+        <a href="./index.html">录取概率预测</a>
+        <a href="./quiz.html">专业匹配测评</a>
+        <a href="./curve.html">一分一段查询</a>
+        <a href="./plan.html">冲稳保方案</a>
+        <a href="./mooc.html">专业先导课</a>
+      </nav>
+      <nav class="footer-col" aria-label="数据">
+        <h2>数据</h2>
+        <a href="./about.html#data">数据来源</a>
+        <a href="./about.html#method">计算方法</a>
+        <a href="./about.html#accuracy">回测与误差</a>
+        <a href="./help.html">帮助中心</a>
+      </nav>
+      <nav class="footer-col" aria-label="关于">
+        <h2>关于</h2>
+        <a href="./about.html">关于赤鲤</a>
+        <a href="./privacy.html">隐私政策</a>
+        <a href="./terms.html">用户协议</a>
+        <a href="./help.html#contact">联系我们</a>
+      </nav>
+    </div>
+    <div class="footer-base">
+      <p>© 2026 赤鲤 · 结果由统计模型估算，仅供参考，不构成录取承诺。</p>
+      <p><a href="./about.html#filing">备案信息</a></p>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <noscript><p style="padding:24px;text-align:center">这个页面需要启用 JavaScript。</p></noscript>
+  <script type="module" src="./js/plan.js"></script>
+</body>
+</html>
